@@ -13,6 +13,28 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class FieldService {
     private final FieldRepository repository;
+    public ResponseEntity<Field> newField(Field field){
+        return ResponseEntity.ok(this.repository.save(field));
+    }
+
+    public ResponseEntity<Field> findFieldById(long id){
+        if(this.repository.findById(id).isPresent())
+            return ResponseEntity.ok(this.repository.findById(id).get());
+
+        return ResponseEntity.status(404).body(null);
+    }
+
+    public ResponseEntity<Field> updateFieldById(Field field, long id){
+        if(repository.findById(id).isPresent()){
+            this.repository.save(field);
+        }
+        
+        return ResponseEntity.status(404).body(null);
+    }
+
+    public void deleteFieldById(long id){
+        this.repository.deleteById(id);
+    }
 
     public ResponseEntity<Optional<List<Field>>> findFreeFields(){
         return ResponseEntity.ok(this.repository.findAllByOccupiedIsFalse());
