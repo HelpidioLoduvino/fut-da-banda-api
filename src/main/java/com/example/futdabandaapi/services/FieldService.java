@@ -25,7 +25,7 @@ public class FieldService {
 
     public ResponseEntity<Field> updateFieldById(Field field, long id){
         if(repository.findById(id).isPresent()){
-            this.repository.save(field);
+            return ResponseEntity.ok(this.repository.save(field));
         }
         
         return ResponseEntity.status(404).body(null);
