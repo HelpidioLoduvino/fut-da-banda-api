@@ -35,7 +35,7 @@ public class FieldService {
         this.repository.deleteById(id);
     }
 
-    public ResponseEntity<List<Field>> findFreeFields(){
+    public ResponseEntity<List<Field>> findAvailableFields(){
         return ResponseEntity.ok(this.repository.findAllByOccupiedIsFalse());
     }
 

@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -37,5 +38,20 @@ public class FieldController {
     @GetMapping()
     public ResponseEntity<List<Field>> findAllFields(){
         return this.service.findAllFields();
+    }
+
+    @GetMapping("/available")
+    public ResponseEntity<List<Field>> findAvailableFields(){
+        return this.service.findAvailableFields();
+    }
+
+    @GetMapping("/{location}")
+    public ResponseEntity<List<Field>> findAllByLocation(@PathVariable String location){
+        return this.service.findFieldsByLocation(location);
+    }
+
+    @GetMapping("/{name}")
+    public ResponseEntity<Optional<Field>> findFieldByName(@PathVariable String name){
+        return this.service.findFieldByName(name);
     }
 }
