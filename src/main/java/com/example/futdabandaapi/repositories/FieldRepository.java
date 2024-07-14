@@ -9,7 +9,7 @@ import java.util.Optional;
 
 @Repository
 public interface FieldRepository extends JpaRepository<Field, Long> {
-    public Optional<List<Field>> findAllByOccupiedIsFalse();
-    public Optional<List<Field>> findAllByLocationEqualsIgnoreCase(String location);
+    public List<Field> findAllByOccupiedIsFalse();
+    public List<Field> findAllByLocationEqualsIgnoreCase(String location);
     public Optional<Field> findByNameEqualsIgnoreCase(String name);
 }
