@@ -18,5 +18,5 @@ public class Field {
     private long id;
     private String name;
     private String location;
-    private boolean isOccupied;
+    private boolean occupied;
 }
