@@ -1,6 +1,6 @@
 package com.example.futdabandaapi.repositories;
 
-import com.example.futdabandaapi.models.Club;
+import com.example.futdabandaapi.entities.Club;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

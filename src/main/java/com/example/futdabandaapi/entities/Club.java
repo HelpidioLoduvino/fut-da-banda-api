@@ -1,4 +1,4 @@
-package com.example.futdabandaapi.models;
+package com.example.futdabandaapi.entities;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

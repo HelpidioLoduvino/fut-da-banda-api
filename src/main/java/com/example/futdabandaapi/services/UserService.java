@@ -1,7 +1,7 @@
 package com.example.futdabandaapi.services;
 
 import com.example.futdabandaapi.dtos.*;
-import com.example.futdabandaapi.models.User;
+import com.example.futdabandaapi.entities.User;
 import com.example.futdabandaapi.repositories.UserRepository;
 import com.example.futdabandaapi.security.TokenService;
 import lombok.AllArgsConstructor;

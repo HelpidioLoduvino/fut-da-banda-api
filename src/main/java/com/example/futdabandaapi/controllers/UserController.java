@@ -3,7 +3,7 @@ package com.example.futdabandaapi.controllers;
 import com.example.futdabandaapi.dtos.LoginDto;
 import com.example.futdabandaapi.dtos.TokenRefreshRequestDto;
 import com.example.futdabandaapi.dtos.UserDto;
-import com.example.futdabandaapi.models.User;
+import com.example.futdabandaapi.entities.User;
 import com.example.futdabandaapi.services.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;

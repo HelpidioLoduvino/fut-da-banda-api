@@ -1,6 +1,6 @@
 package com.example.futdabandaapi.controllers;
 
-import com.example.futdabandaapi.models.Club;
+import com.example.futdabandaapi.entities.Club;
 import com.example.futdabandaapi.services.ClubService;
 import lombok.AllArgsConstructor;
 import org.springframework.core.io.Resource;

@@ -1,7 +1,7 @@
 package com.example.futdabandaapi.repositories;
 
 import com.example.futdabandaapi.dtos.UserDto;
-import com.example.futdabandaapi.models.User;
+import com.example.futdabandaapi.entities.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,7 +17,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("select new com.example.futdabandaapi.dtos.UserDto(u.id, u.name, u.surname, u.email, u.userRole, u.createdAt) from User u")
     List<UserDto> findAllUsers();
 
-    @Query("select new com.example.futdabandaapi.models.User(u.id, u.name, u.surname, u.email, u.password, u.userRole, u.createdAt) from User u where u.email = :email")
+    @Query("select new com.example.futdabandaapi.entities.User(u.id, u.name, u.surname, u.email, u.password, u.userRole, u.createdAt) from User u where u.email = :email")
     User findByUserEmail(String email);
 
     User findByUserRole(String role);

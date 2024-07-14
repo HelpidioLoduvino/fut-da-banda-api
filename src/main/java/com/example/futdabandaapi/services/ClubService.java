@@ -1,7 +1,7 @@
 package com.example.futdabandaapi.services;
 
-import com.example.futdabandaapi.models.Club;
-import com.example.futdabandaapi.models.User;
+import com.example.futdabandaapi.entities.Club;
+import com.example.futdabandaapi.entities.User;
 import com.example.futdabandaapi.repositories.ClubRepository;
 import com.example.futdabandaapi.repositories.UserRepository;
 import lombok.AllArgsConstructor;
@@ -11,9 +11,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
