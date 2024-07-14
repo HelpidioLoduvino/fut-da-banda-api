@@ -5,7 +5,6 @@ import com.example.futdabandaapi.repositories.FieldRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -36,15 +35,19 @@ public class FieldService {
         this.repository.deleteById(id);
     }
 
-    public ResponseEntity<Optional<List<Field>>> findFreeFields(){
+    public ResponseEntity<List<Field>> findFreeFields(){
         return ResponseEntity.ok(this.repository.findAllByOccupiedIsFalse());
     }
 
-    public ResponseEntity<Optional<List<Field>>> findFieldsByLocation(String location){
+    public ResponseEntity<List<Field>> findFieldsByLocation(String location){
         return ResponseEntity.ok(this.repository.findAllByLocationEqualsIgnoreCase(location));
     }
 
     public ResponseEntity<Optional<Field>> findFieldByName(String name){
         return ResponseEntity.ok(this.repository.findByNameEqualsIgnoreCase(name));
+    }
+
+    public ResponseEntity<List<Field>> findAllFields(){
+        return ResponseEntity.ok(this.repository.findAll());
     }
 }
