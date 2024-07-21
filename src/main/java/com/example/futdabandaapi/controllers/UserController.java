@@ -8,6 +8,7 @@ import com.example.futdabandaapi.entities.Player;
 import com.example.futdabandaapi.entities.User;
 import com.example.futdabandaapi.services.UserService;
 import lombok.AllArgsConstructor;
+import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -41,6 +42,11 @@ public class UserController {
         return ResponseEntity.ok(userService.getAllUsers());
     }
 
+    @GetMapping("/all-players")
+    public ResponseEntity<List<PlayerDto>> getAllPlayers() {
+        return ResponseEntity.ok(userService.getAllPlayers());
+    }
+
     @GetMapping("/all-users")
     public ResponseEntity<List<User>> getUsers() {
         return ResponseEntity.ok(userService.getUsers());
@@ -55,6 +61,11 @@ public class UserController {
     @PostMapping("/refreshToken")
     public ResponseEntity<Object> refresh(@RequestBody TokenRefreshRequestDto request) {
         return ResponseEntity.ok(userService.refresh(request));
+    }
+
+    @GetMapping("/display/{id}")
+    public ResponseEntity<Resource> showPhoto(@PathVariable Long id) {
+        return ResponseEntity.ok(userService.showPhoto(id).getBody());
     }
 
 }

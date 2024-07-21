@@ -26,9 +26,9 @@ public class Championship {
 
     private String location;
 
-    private String group;
+    private String cGroup;
 
-    private double price;
+    private Double price;
 
     @ManyToMany
     private List<Club> clubs = new ArrayList<>();

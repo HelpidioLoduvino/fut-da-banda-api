@@ -30,10 +30,12 @@ public class SecurityConfiguration implements WebMvcConfigurer {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.POST, "/api/user/refreshToken").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/user/register-player").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/user/register").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/user/login").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/user/all-players").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/club/all").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/club/register").hasAnyAuthority("ADMIN", "CAPTAIN", "COACH")
+                        .requestMatchers(HttpMethod.GET, "/api/club/register").hasAnyAuthority("ADMIN", "CAPTAIN", "SUB-CAPTAIN")
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)

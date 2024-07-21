@@ -40,9 +40,6 @@ public class User implements UserDetails {
         this.createdAt = createdAt;
     }
 
-    public User(Long id, String fullName, String email, String password, String userRole) {
-    }
-
     @PrePersist
     protected void onCreate() {
         if (createdAt == null) {

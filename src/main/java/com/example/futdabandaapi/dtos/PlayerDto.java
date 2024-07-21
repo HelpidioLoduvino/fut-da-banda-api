@@ -1,7 +1,16 @@
 package com.example.futdabandaapi.dtos;
 
-import com.example.futdabandaapi.entities.Player;
-import com.example.futdabandaapi.entities.User;
+import java.util.Date;
 
-public record PlayerDto(User user, Player player) {
+public record PlayerDto(
+        Long id,
+        String fullName,
+        String email,
+        String userRole,
+        Date createdAt,
+        String photo,
+        String position,
+        String gender,
+        String biography
+) {
 }

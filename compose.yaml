@@ -2,7 +2,7 @@ services:
   mysql:
     image: 'mysql:latest'
     environment:
-      - 'MYSQL_DATABASE=fut_da_banda_Db'
+      - 'MYSQL_DATABASE=fut_da_banda'
       - 'MYSQL_ROOT_PASSWORD=futDaBanda'
     ports:
       - '3306'

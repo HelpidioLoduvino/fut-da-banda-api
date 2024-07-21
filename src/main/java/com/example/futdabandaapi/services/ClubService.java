@@ -6,10 +6,7 @@ import com.example.futdabandaapi.repositories.ClubRepository;
 import com.example.futdabandaapi.repositories.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,6 +19,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.UUID;
+
+import static com.example.futdabandaapi.services.UserService.getResourceResponseEntity;
 
 @Service
 @AllArgsConstructor
@@ -45,6 +44,7 @@ public class ClubService {
         saveFile(file, filename);
         club.setBadge(uploadDir + filename);
         club.setUser(user);
+        club.setReadyToPlay(false);
         clubRepository.save(club);
         return ResponseEntity.ok(club);
     }
@@ -62,17 +62,7 @@ public class ClubService {
             Club club = clubRepository.findById(id).orElse(null);
             if(club != null){
                 Path path = Paths.get(club.getBadge());
-                Resource resource = new UrlResource(path.toUri());
-                if(resource.exists() || resource.isReadable()){
-                    HttpHeaders headers = new HttpHeaders();
-                    headers.add(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + resource.getFilename() + "\"");
-                    return ResponseEntity.ok()
-                            .headers(headers)
-                            .contentType(MediaType.APPLICATION_OCTET_STREAM)
-                            .body(resource);
-                } else {
-                    return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
-                }
+                return getResourceResponseEntity(path);
             }
         }catch (MalformedURLException e) {
             throw new RuntimeException("Erro: " + e.getMessage());

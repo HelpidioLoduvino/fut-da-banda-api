@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 @EqualsAndHashCode(callSuper = true)
 @Entity
 @Data
@@ -25,8 +27,8 @@ public class Player extends User{
     @Column(columnDefinition = "LONGTEXT")
     private String biography;
 
-    public Player(Long id, String fullName, String email, String password, String userRole, String photo, String position, String gender, String biography) {
-        super(id, fullName, email, password, userRole);
+    public Player(Long id, String fullName, String email, String password, String userRole, Date createdAt, String photo, String position, String gender, String biography) {
+        super(id, fullName, email, password, userRole, createdAt);
         this.photo = photo;
         this.position = position;
         this.gender = gender;

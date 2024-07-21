@@ -18,7 +18,7 @@ public class Club {
 
     private String abv;
 
-    private String location;
+    private String province;
 
     private String badge;
 
@@ -26,11 +26,11 @@ public class Club {
 
     private String description;
 
-    private String group;
+    private String cGroup;
 
     private String category;
 
-    private boolean isReadyToPlay = false;
+    private boolean isReadyToPlay;
 
     @ManyToOne
     private User user;

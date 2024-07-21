@@ -1,6 +1,7 @@
 package com.example.futdabandaapi.services;
 
 import com.example.futdabandaapi.dtos.*;
+import com.example.futdabandaapi.entities.Club;
 import com.example.futdabandaapi.entities.Player;
 import com.example.futdabandaapi.entities.User;
 import com.example.futdabandaapi.repositories.PlayerRepository;
@@ -9,7 +10,11 @@ import com.example.futdabandaapi.security.TokenService;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.context.ApplicationContext;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -25,6 +30,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -94,6 +100,7 @@ public class UserService implements UserDetailsService {
                     player.getEmail(),
                     encodedPassword,
                     player.getUserRole(),
+                    null,
                     uploadDir + filename,
                     player.getPosition(),
                     player.getGender(),
@@ -105,7 +112,6 @@ public class UserService implements UserDetailsService {
             return ResponseEntity.ok().build();
 
         }catch (Exception e){
-            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("An error occurred during registration");
         }
@@ -141,6 +147,10 @@ public class UserService implements UserDetailsService {
 
     public List<UserDto> getAllUsers() {
         return userRepository.findAllUsers();
+    }
+
+    public List<PlayerDto> getAllPlayers() {
+        return playerRepository.findAllPlayers();
     }
 
     public List<User> getUsers() {
@@ -179,6 +189,33 @@ public class UserService implements UserDetailsService {
         }
         Path filePath = Paths.get(uploadDir + fileName);
         Files.write(filePath, file.getBytes());
+    }
+
+    public ResponseEntity<Resource> showPhoto(Long id){
+        try{
+            Player player = playerRepository.findById(id).orElse(null);
+            if(player != null){
+                Path path = Paths.get(player.getPhoto());
+                return getResourceResponseEntity(path);
+            }
+        }catch (MalformedURLException e) {
+            throw new RuntimeException("Erro: " + e.getMessage());
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+    }
+
+    static ResponseEntity<Resource> getResourceResponseEntity(Path path) throws MalformedURLException {
+        Resource resource = new UrlResource(path.toUri());
+        if(resource.exists() || resource.isReadable()){
+            HttpHeaders headers = new HttpHeaders();
+            headers.add(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + resource.getFilename() + "\"");
+            return ResponseEntity.ok()
+                    .headers(headers)
+                    .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                    .body(resource);
+        } else {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+        }
     }
 
 }
