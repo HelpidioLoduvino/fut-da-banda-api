@@ -36,8 +36,6 @@ public class ClubService {
 
         String email = userService.getCurrentUser();
 
-        System.out.println("email: " + email);
-
         User user = userRepository.findByUserEmail(email);
         if(user == null){
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
@@ -45,7 +43,7 @@ public class ClubService {
 
         String filename = generateUniqueFileName(file.getOriginalFilename());
         saveFile(file, filename);
-        club.setLogo(uploadDir + filename);
+        club.setBadge(uploadDir + filename);
         club.setUser(user);
         clubRepository.save(club);
         return ResponseEntity.ok(club);
@@ -63,7 +61,7 @@ public class ClubService {
         try{
             Club club = clubRepository.findById(id).orElse(null);
             if(club != null){
-                Path path = Paths.get(club.getLogo());
+                Path path = Paths.get(club.getBadge());
                 Resource resource = new UrlResource(path.toUri());
                 if(resource.exists() || resource.isReadable()){
                     HttpHeaders headers = new HttpHeaders();
@@ -95,7 +93,5 @@ public class ClubService {
         Path filePath = Paths.get(uploadDir + fileName);
         Files.write(filePath, file.getBytes());
     }
-
-
 
 }

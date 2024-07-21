@@ -1,13 +1,16 @@
 package com.example.futdabandaapi.controllers;
 
 import com.example.futdabandaapi.dtos.LoginDto;
+import com.example.futdabandaapi.dtos.PlayerDto;
 import com.example.futdabandaapi.dtos.TokenRefreshRequestDto;
 import com.example.futdabandaapi.dtos.UserDto;
+import com.example.futdabandaapi.entities.Player;
 import com.example.futdabandaapi.entities.User;
 import com.example.futdabandaapi.services.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -21,6 +24,11 @@ public class UserController {
     @PostMapping("/register")
     public ResponseEntity<Object> register(@RequestBody User user) {
         return userService.registerUser(user);
+    }
+
+    @PostMapping("/register-player")
+    public ResponseEntity<Object> registerPlayer(@RequestPart("player") Player player, @RequestPart("photo") MultipartFile photo) {
+        return userService.registerPlayer(player, photo);
     }
 
     @PostMapping("/login")

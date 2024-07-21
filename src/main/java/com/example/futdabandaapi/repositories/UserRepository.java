@@ -14,10 +14,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     UserDetails findByEmail(String email);
 
-    @Query("select new com.example.futdabandaapi.dtos.UserDto(u.id, u.name, u.surname, u.email, u.userRole, u.createdAt) from User u")
+    @Query("select new com.example.futdabandaapi.dtos.UserDto(u.id, u.fullName, u.email, u.userRole, u.createdAt) from User u")
     List<UserDto> findAllUsers();
 
-    @Query("select new com.example.futdabandaapi.entities.User(u.id, u.name, u.surname, u.email, u.password, u.userRole, u.createdAt) from User u where u.email = :email")
+    @Query("select new com.example.futdabandaapi.entities.User(u.id, u.fullName, u.email, u.password, u.userRole, u.createdAt) from User u where u.email = :email")
     User findByUserEmail(String email);
 
     User findByUserRole(String role);

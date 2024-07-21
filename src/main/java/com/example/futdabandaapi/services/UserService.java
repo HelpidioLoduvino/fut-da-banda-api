@@ -1,9 +1,12 @@
 package com.example.futdabandaapi.services;
 
 import com.example.futdabandaapi.dtos.*;
+import com.example.futdabandaapi.entities.Player;
 import com.example.futdabandaapi.entities.User;
+import com.example.futdabandaapi.repositories.PlayerRepository;
 import com.example.futdabandaapi.repositories.UserRepository;
 import com.example.futdabandaapi.security.TokenService;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpStatus;
@@ -18,17 +21,26 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @AllArgsConstructor
 public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
+    private final PlayerRepository playerRepository;
     private final PasswordEncoder passwordEncoder;
     private final ApplicationContext applicationContext;
     private final TokenService tokenService;
+    private static final String uploadDir = "src/main/resources/static/player/";
 
 
     @Override
@@ -36,7 +48,7 @@ public class UserService implements UserDetailsService {
         return userRepository.findByEmail(email);
     }
 
-    public ResponseEntity<Object> registerUser(@RequestBody User user) {
+    public ResponseEntity<Object> registerUser(User user) {
         try {
             if(this.userRepository.findByEmail(user.getEmail()) != null) return ResponseEntity.badRequest().build();
 
@@ -47,7 +59,7 @@ public class UserService implements UserDetailsService {
 
             String encodedPassword = passwordEncoder.encode(user.getPassword());
 
-            User newUser = new User(null, user.getName(), user.getSurname(), user.getEmail(), encodedPassword, user.getUserRole(), null);
+            User newUser = new User(null, user.getFullName(), user.getEmail(), encodedPassword, user.getUserRole(), null);
 
             userRepository.save(newUser);
 
@@ -58,6 +70,45 @@ public class UserService implements UserDetailsService {
                     .body("An error occurred during registration");
         }
 
+    }
+
+    @Transactional
+    public ResponseEntity<Object> registerPlayer(Player player, MultipartFile photo) {
+        try {
+            if(this.userRepository.findByEmail(player.getEmail()) != null) return ResponseEntity.badRequest().build();
+
+            if(!player.getPassword().equals(player.getConfirmPassword())){
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                        .body("Passwords do not match");
+            }
+
+            String encodedPassword = passwordEncoder.encode(player.getPassword());
+
+            String filename = generateUniqueFileName(photo.getOriginalFilename());
+
+            saveFile(photo, filename);
+
+            Player newPlayer = new Player(
+                    null,
+                    player.getFullName(),
+                    player.getEmail(),
+                    encodedPassword,
+                    player.getUserRole(),
+                    uploadDir + filename,
+                    player.getPosition(),
+                    player.getGender(),
+                    player.getBiography()
+            );
+
+            playerRepository.save(newPlayer);
+
+            return ResponseEntity.ok().build();
+
+        }catch (Exception e){
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("An error occurred during registration");
+        }
     }
 
     public ResponseEntity<Object> login(@RequestBody LoginDto loginDTO){
@@ -114,6 +165,20 @@ public class UserService implements UserDetailsService {
         }
 
         return username;
+    }
+
+    private String generateUniqueFileName(String originalFilename) {
+        return UUID.randomUUID() + "_" + originalFilename;
+    }
+
+    private void saveFile(MultipartFile file, String fileName) throws IOException {
+
+        File directory = new File(uploadDir);
+        if (!directory.exists()) {
+            directory.mkdirs();
+        }
+        Path filePath = Paths.get(uploadDir + fileName);
+        Files.write(filePath, file.getBytes());
     }
 
 }

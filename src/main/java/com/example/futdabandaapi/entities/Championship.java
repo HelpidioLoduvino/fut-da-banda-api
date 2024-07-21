@@ -5,34 +5,32 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Club {
+public class Championship {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String name;
 
-    private String abv;
-
-    private String location;
-
-    private String badge;
-
-    private String state;
-
+    @Column(columnDefinition = "LONGTEXT")
     private String description;
-
-    private String group;
 
     private String category;
 
-    private boolean isReadyToPlay = false;
+    private String location;
 
-    @ManyToOne
-    private User user;
+    private String group;
+
+    private double price;
+
+    @ManyToMany
+    private List<Club> clubs = new ArrayList<>();
 
 }

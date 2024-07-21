@@ -13,13 +13,13 @@ import java.util.*;
 @Entity
 @Data
 @NoArgsConstructor
+@Inheritance(strategy = InheritanceType.JOINED)
 @AllArgsConstructor
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
-    private String surname;
+    private String fullName;
     @Column(unique = true)
     private String email;
     private String password;
@@ -31,14 +31,16 @@ public class User implements UserDetails {
             columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private Date createdAt;
 
-    public User(Long id, String name, String surname, String email, String encodedPassword, String userRole, Date createdAt) {
+    public User(Long id, String fullName, String email, String encodedPassword, String userRole, Date createdAt) {
         this.id = id;
-        this.name = name;
-        this.surname = surname;
+        this.fullName = fullName;
         this.email = email;
         this.password = encodedPassword;
         this.userRole = userRole;
         this.createdAt = createdAt;
+    }
+
+    public User(Long id, String fullName, String email, String password, String userRole) {
     }
 
     @PrePersist
@@ -57,7 +59,7 @@ public class User implements UserDetails {
         List<SimpleGrantedAuthority> authorities = new ArrayList<>();
         switch (this.userRole) {
             case "ADMIN" -> authorities.add(new SimpleGrantedAuthority("ADMIN"));
-            case "COACH" -> authorities.add(new SimpleGrantedAuthority("COACH"));
+            case "SUB-CAPTAIN" -> authorities.add(new SimpleGrantedAuthority("SUB-CAPTAIN"));
             case "CAPTAIN" -> authorities.add(new SimpleGrantedAuthority("CAPTAIN"));
             case "PLAYER" -> authorities.add(new SimpleGrantedAuthority("PLAYER"));
         }
