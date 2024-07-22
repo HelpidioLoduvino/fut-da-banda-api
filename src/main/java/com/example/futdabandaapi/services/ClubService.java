@@ -43,7 +43,7 @@ public class ClubService {
         String filename = generateUniqueFileName(file.getOriginalFilename());
         saveFile(file, filename);
         club.setBadge(uploadDir + filename);
-        club.setUser(user);
+        club.getPlayers().add(user);
         club.setReadyToPlay(false);
         clubRepository.save(club);
         return ResponseEntity.ok(club);
@@ -65,7 +65,7 @@ public class ClubService {
                 return getResourceResponseEntity(path);
             }
         }catch (MalformedURLException e) {
-            throw new RuntimeException("Erro: " + e.getMessage());
+            throw new RuntimeException("Error: " + e.getMessage());
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
     }

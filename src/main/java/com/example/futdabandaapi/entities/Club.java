@@ -5,6 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Data
 @AllArgsConstructor
@@ -14,6 +17,7 @@ public class Club {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(unique = true)
     private String name;
 
     private String abv;
@@ -26,13 +30,13 @@ public class Club {
 
     private String description;
 
-    private String cGroup;
+    private String groupType;
 
     private String category;
 
     private boolean isReadyToPlay;
 
-    @ManyToOne
-    private User user;
+    @ManyToMany
+    private List<User> players = new ArrayList<>();
 
 }

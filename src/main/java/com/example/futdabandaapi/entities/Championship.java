@@ -17,6 +17,7 @@ public class Championship {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(unique = true)
     private String name;
 
     @Column(columnDefinition = "LONGTEXT")
@@ -24,11 +25,13 @@ public class Championship {
 
     private String category;
 
-    private String location;
+    private String province;
 
-    private String cGroup;
+    private String groupType;
 
     private Double price;
+
+    private Integer matchDay;
 
     @ManyToMany
     private List<Club> clubs = new ArrayList<>();
