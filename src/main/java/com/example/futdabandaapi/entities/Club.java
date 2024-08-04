@@ -28,6 +28,7 @@ public class Club {
 
     private String state;
 
+    @Column(columnDefinition = "LONGTEXT")
     private String description;
 
     private String groupType;
