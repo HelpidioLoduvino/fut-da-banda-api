@@ -1,8 +1,9 @@
 services:
-  mysql:
-    image: 'mysql:latest'
+  postgres:
+    image: 'postgres:latest'
     environment:
-      - 'MYSQL_DATABASE=fut_da_banda'
-      - 'MYSQL_ROOT_PASSWORD=futDaBanda'
+      - POSTGRES_DB=fut_da_banda
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=futDaBanda
     ports:
-      - '3306'
+      - '5432:5432'

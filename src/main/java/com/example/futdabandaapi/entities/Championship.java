@@ -20,7 +20,7 @@ public class Championship {
     @Column(unique = true)
     private String name;
 
-    @Column(columnDefinition = "LONGTEXT")
+    @Column(columnDefinition = "TEXT")
     private String description;
 
     private String category;

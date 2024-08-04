@@ -24,7 +24,7 @@ public class Player extends User{
 
     private String gender;
 
-    @Column(columnDefinition = "LONGTEXT")
+    @Column(columnDefinition = "TEXT")
     private String biography;
 
     public Player(Long id, String fullName, String email, String password, String userRole, Date createdAt, String photo, String position, String gender, String biography) {
