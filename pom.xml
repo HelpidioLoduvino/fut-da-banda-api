@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.example</groupId>
     <artifactId>fut-da-banda-api</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0.0</version>
     <name>fut-da-banda-api</name>
     <description>fut-da-banda-api</description>
     <url/>
