@@ -8,6 +8,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDate;
 import java.util.*;
 
 @Entity
@@ -26,13 +27,10 @@ public class User implements UserDetails {
     private String password;
     private String confirmPassword;
     private String userRole;
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "created_at",
-            nullable = false, updatable = false,
-            columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
-    private Date createdAt;
+    @Column(nullable = false, updatable = false, columnDefinition = "DATE")
+    private LocalDate createdAt;
 
-    public User(Long id, String fullName, String email, String encodedPassword, String userRole, Date createdAt) {
+    public User(Long id, String fullName, String email, String encodedPassword, String userRole, LocalDate createdAt) {
         this.id = id;
         this.fullName = fullName;
         this.email = email;
@@ -44,10 +42,7 @@ public class User implements UserDetails {
     @PrePersist
     protected void onCreate() {
         if (createdAt == null) {
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(new Date());
-            calendar.add(Calendar.HOUR, 1);
-            createdAt = calendar.getTime();
+            createdAt = LocalDate.now();
         }
     }
 
