@@ -44,7 +44,10 @@ public class User implements UserDetails {
     @PrePersist
     protected void onCreate() {
         if (createdAt == null) {
-            createdAt = new Date();
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(new Date());
+            calendar.add(Calendar.HOUR, 1);
+            createdAt = calendar.getTime();
         }
     }
 
