@@ -1,6 +1,6 @@
 package com.example.futdabandaapi.security;
 
-import com.example.futdabandaapi.repositories.UserRepository;
+import com.example.futdabandaapi.repository.UserRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

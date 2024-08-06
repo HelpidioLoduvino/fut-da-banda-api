@@ -1,7 +1,7 @@
 package com.example.futdabandaapi;
 
-import com.example.futdabandaapi.entities.User;
-import com.example.futdabandaapi.repositories.UserRepository;
+import com.example.futdabandaapi.model.User;
+import com.example.futdabandaapi.repository.UserRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
