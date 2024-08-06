@@ -120,10 +120,6 @@ public class UserService implements UserDetailsService {
         return playerRepository.findAllPlayers();
     }
 
-    public List<User> getUsers() {
-        return userRepository.findAll();
-    }
-
     public void deleteUser(Long id) {
         userRepository.deleteById(id);
     }

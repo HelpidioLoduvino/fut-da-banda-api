@@ -29,7 +29,7 @@ public class UserController {
        return ResponseEntity.ok(userService.login(user));
     }
 
-    @GetMapping("/all")
+    @GetMapping
     public ResponseEntity<List<UserDto>> getAllUsers() {
         return ResponseEntity.ok(userService.getAllUsers());
     }
@@ -38,12 +38,6 @@ public class UserController {
     public ResponseEntity<List<PlayerDto>> getAllPlayers() {
         return ResponseEntity.ok(userService.getAllPlayers());
     }
-
-    @GetMapping("/all-users")
-    public ResponseEntity<List<User>> getUsers() {
-        return ResponseEntity.ok(userService.getUsers());
-    }
-
 
     @DeleteMapping
     public ResponseEntity<Object> deleteUser(@RequestParam Long id) {
