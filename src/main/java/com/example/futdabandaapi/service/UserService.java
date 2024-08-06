@@ -53,22 +53,6 @@ public class UserService implements UserDetailsService {
         return userRepository.findByEmail(email);
     }
 
-    public User registerUser(User user) {
-        try {
-            if(this.userRepository.findByEmail(user.getEmail()) != null) throw new RuntimeException("User already exists");
-
-            String encodedPassword = passwordEncoder.encode(user.getPassword());
-
-            User newUser = new User(null, user.getFullName(), user.getEmail(), encodedPassword, user.getUserRole(), null);
-
-            return userRepository.save(newUser);
-
-        }catch (Exception e){
-            throw new RuntimeException(e);
-        }
-
-    }
-
     @Transactional
     public Player registerPlayer(Player player, MultipartFile photo) {
         try {

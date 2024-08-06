@@ -20,11 +20,6 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping
-    public ResponseEntity<User> register(@RequestBody User user) {
-        return ResponseEntity.ok(userService.registerUser(user));
-    }
-
-    @PostMapping("/player")
     public ResponseEntity<Player> registerPlayer(@RequestPart("player") Player player, @RequestPart("photo") MultipartFile photo) {
         return ResponseEntity.ok(userService.registerPlayer(player, photo));
     }
@@ -56,7 +51,7 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/refreshToken")
+    @PostMapping("/token")
     public ResponseEntity<Object> refresh(@RequestBody TokenRefreshRequestDto request) {
         return ResponseEntity.ok(userService.refresh(request));
     }
