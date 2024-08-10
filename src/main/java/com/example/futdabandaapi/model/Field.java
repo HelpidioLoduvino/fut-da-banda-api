@@ -19,5 +19,5 @@ public class Field {
 
     private String location;
 
-    private boolean occupied;
+    private String state;
 }

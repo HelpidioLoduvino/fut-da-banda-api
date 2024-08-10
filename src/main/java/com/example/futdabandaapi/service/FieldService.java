@@ -3,9 +3,9 @@ package com.example.futdabandaapi.service;
 import com.example.futdabandaapi.model.Field;
 import com.example.futdabandaapi.repository.FieldRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.http.ResponseEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -31,19 +31,15 @@ public class FieldService {
         return null;
     }
 
-    public void deleteFieldById(long id){
+    public void deleteFieldById(Long id){
         this.fieldRepository.deleteById(id);
     }
 
-    public List<Field> findAvailableFields(){
-        return fieldRepository.findAllByOccupiedIsFalse();
+    public Page<Field> findAll(Pageable pageable){
+        return fieldRepository.findAll(pageable);
     }
 
     public Optional<Field> findFieldByName(String name){
         return fieldRepository.findByNameEqualsIgnoreCase(name);
-    }
-
-    public List<Field> findAllFields(){
-        return fieldRepository.findAll();
     }
 }

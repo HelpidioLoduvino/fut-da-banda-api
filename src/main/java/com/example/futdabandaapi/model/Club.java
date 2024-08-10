@@ -24,7 +24,7 @@ public class Club {
 
     private String province;
 
-    private String badge;
+    private String emblem;
 
     private String state;
 

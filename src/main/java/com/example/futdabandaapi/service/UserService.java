@@ -11,8 +11,9 @@ import lombok.AllArgsConstructor;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -53,10 +54,21 @@ public class UserService implements UserDetailsService {
         return userRepository.findByEmail(email);
     }
 
+    public User save(User user){
+        try{
+            if(userRepository.findByEmail(user.getEmail()) != null) throw new RuntimeException("User already exists");
+            String encodedPassword = passwordEncoder.encode(user.getPassword());
+            user.setPassword(encodedPassword);
+            return userRepository.save(user);
+        }catch (Exception e){
+            throw new RuntimeException(e);
+        }
+    }
+
     @Transactional
     public Player registerPlayer(Player player, MultipartFile photo) {
         try {
-            if(this.userRepository.findByEmail(player.getEmail()) != null) throw new RuntimeException("Player already exists");
+            if(userRepository.findByEmail(player.getEmail()) != null) throw new RuntimeException("Player already exists");
 
             String encodedPassword = passwordEncoder.encode(player.getPassword());
 
@@ -70,7 +82,6 @@ public class UserService implements UserDetailsService {
                     player.getEmail(),
                     encodedPassword,
                     player.getUserRole(),
-                    null,
                     uploadPath.getPlayerUploadDir() + filename,
                     player.getPosition(),
                     player.getGender(),
@@ -112,15 +123,15 @@ public class UserService implements UserDetailsService {
         }
     }
 
-    public List<UserDto> getAllUsers() {
-        return userRepository.findAllUsers();
+    public Page<User> getAllExceptAdmin(Pageable pageable) {
+        return userRepository.findAllExceptAdmin(pageable);
     }
 
     public List<PlayerDto> getAllPlayers() {
         return playerRepository.findAllPlayers();
     }
 
-    public void deleteUser(Long id) {
+    public void delete(Long id) {
         userRepository.deleteById(id);
     }
 

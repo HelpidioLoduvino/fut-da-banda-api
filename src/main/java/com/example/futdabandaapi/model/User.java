@@ -26,31 +26,14 @@ public class User implements UserDetails {
     private String password;
     private String confirmPassword;
     private String userRole;
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "created_at",
-            nullable = false, updatable = false,
-            columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
-    private Date createdAt;
 
-    public User(Long id, String fullName, String email, String encodedPassword, String userRole, Date createdAt) {
+    public User(Long id, String fullName, String email, String encodedPassword, String userRole) {
         this.id = id;
         this.fullName = fullName;
         this.email = email;
         this.password = encodedPassword;
         this.userRole = userRole;
-        this.createdAt = createdAt;
     }
-
-    @PrePersist
-    protected void onCreate() {
-        if (createdAt == null) {
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(new Date());
-            calendar.add(Calendar.HOUR, 1);
-            createdAt = calendar.getTime();
-        }
-    }
-
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

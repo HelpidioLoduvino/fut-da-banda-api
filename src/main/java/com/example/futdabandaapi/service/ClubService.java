@@ -6,6 +6,8 @@ import com.example.futdabandaapi.repository.ClubRepository;
 import com.example.futdabandaapi.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.core.io.Resource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -29,7 +31,7 @@ public class ClubService {
     private final UserService userService;
     private final UploadPath uploadPath;
 
-    public Club addClub(Club club, MultipartFile file) throws IOException {
+    public Club add(Club club, MultipartFile file) throws IOException {
 
         String email = userService.getCurrentUser();
 
@@ -37,17 +39,44 @@ public class ClubService {
 
         String filename = generateUniqueFileName(file.getOriginalFilename());
         saveFile(file, filename);
-        club.setBadge(uploadPath.getClubUploadDir() + filename);
+        club.setEmblem(uploadPath.getClubUploadDir() + filename);
         club.getPlayers().add(user);
         club.setReadyToPlay(false);
         return clubRepository.save(club);
     }
 
-    public List<Club> getAllClubs() {
-        return clubRepository.findAll();
+    public Page<Club> getAll(Pageable pageable) {
+        return clubRepository.findAll(pageable);
     }
 
-    public void deleteClub(Long id){
+    public Club findById(Long id) {
+        return clubRepository.findById(id).orElse(null);
+    }
+
+    public Club update(Club club, Long id) {
+        Club existingClub = clubRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Club not found."));
+        existingClub.setName(club.getName());
+        existingClub.setAbv(club.getAbv());
+        existingClub.setProvince(club.getProvince());
+        existingClub.setState(club.getState());
+        existingClub.setDescription(club.getDescription());
+        existingClub.setGroupType(club.getGroupType());
+        existingClub.setCategory(club.getCategory());
+        return clubRepository.save(existingClub);
+    }
+
+    public void uploadFile(MultipartFile file, Long id) throws IOException {
+        Club club = clubRepository.findById(id).orElse(null);
+        String fileName = generateUniqueFileName(file.getOriginalFilename());
+        saveFile(file, fileName);
+        assert club != null;
+        club.setEmblem(uploadPath.getClubUploadDir() + fileName);
+        clubRepository.save(club);
+    }
+
+
+    public void delete(Long id){
         clubRepository.deleteById(id);
     }
 
@@ -55,7 +84,7 @@ public class ClubService {
         try{
             Club club = clubRepository.findById(id).orElse(null);
             if(club != null){
-                Path path = Paths.get(club.getBadge());
+                Path path = Paths.get(club.getEmblem());
                 return getResourceResponseEntity(path);
             }
         }catch (MalformedURLException e) {
