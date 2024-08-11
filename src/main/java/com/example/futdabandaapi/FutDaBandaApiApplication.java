@@ -19,7 +19,6 @@ public class FutDaBandaApiApplication {
     CommandLineRunner initDatabase(UserRepository userRepository) {
         return args -> {
             User adminUser = userRepository.findByUserRole("ADMIN");
-
             if (adminUser == null) {
                 adminUser = new User();
                 adminUser.setFullName("Helpidio Loduvino Caldeira Mateus");
@@ -28,6 +27,7 @@ public class FutDaBandaApiApplication {
                 String encodedPassword = passwordEncoder.encode("12345");
                 adminUser.setPassword(encodedPassword);
                 adminUser.setConfirmPassword(encodedPassword);
+                adminUser.setStatus("Ativo");
                 adminUser.setUserRole("ADMIN");
                 userRepository.save(adminUser);
             }

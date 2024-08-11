@@ -27,11 +27,14 @@ public class Player extends User{
     @Column(columnDefinition = "TEXT")
     private String biography;
 
-    public Player(Long id, String fullName, String email, String password, String userRole, String photo, String position, String gender, String biography) {
-        super(id, fullName, email, password, userRole);
+    private String available;
+
+    public Player(Long id, String fullName, String email, String password, String userRole, String photo, String position, String gender, String biography, String available, String status) {
+        super(id, fullName, email, password, userRole, status);
         this.photo = photo;
         this.position = position;
         this.gender = gender;
         this.biography = biography;
+        this.available = available;
     }
 }

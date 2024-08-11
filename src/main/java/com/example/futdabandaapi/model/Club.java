@@ -26,7 +26,7 @@ public class Club {
 
     private String emblem;
 
-    private String state;
+    private String status;
 
     @Column(columnDefinition = "TEXT")
     private String description;
@@ -39,5 +39,7 @@ public class Club {
 
     @ManyToMany
     private List<User> players = new ArrayList<>();
+
+    private String ban;
 
 }

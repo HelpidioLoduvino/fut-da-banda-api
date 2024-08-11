@@ -40,14 +40,18 @@ public class ClubController {
 
     @PutMapping("/emblem")
     public ResponseEntity<Object> updateEmblem(@RequestPart("emblem") MultipartFile file, @RequestParam("id") Long id) throws IOException {
-        clubService.uploadFile(file, id);
+        clubService.updateEmblem(file, id);
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping
-    public ResponseEntity<Club> delete(@RequestParam("id") Long id) {
-        clubService.delete(id);
-        return ResponseEntity.ok().build();
+    @PutMapping("/ban")
+    public ResponseEntity<Club> ban(@RequestParam Long id) {
+        return ResponseEntity.ok(clubService.ban(id));
+    }
+
+    @PutMapping("/unban")
+    public ResponseEntity<Club> unban(@RequestParam Long id) {
+        return ResponseEntity.ok(clubService.unban(id));
     }
 
     @GetMapping("/display/{id}")

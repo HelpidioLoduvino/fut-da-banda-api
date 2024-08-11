@@ -19,5 +19,5 @@ public class Field {
 
     private String location;
 
-    private String state;
+    private String status;
 }

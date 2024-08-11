@@ -35,7 +35,9 @@ public class ClubService {
 
         String email = userService.getCurrentUser();
 
-        User user = userRepository.findByUserEmail(email);
+        User user = userRepository.findUserByEmail(email);
+
+        club.setBan("Ativo");
 
         String filename = generateUniqueFileName(file.getOriginalFilename());
         saveFile(file, filename);
@@ -59,14 +61,14 @@ public class ClubService {
         existingClub.setName(club.getName());
         existingClub.setAbv(club.getAbv());
         existingClub.setProvince(club.getProvince());
-        existingClub.setState(club.getState());
+        existingClub.setStatus(club.getStatus());
         existingClub.setDescription(club.getDescription());
         existingClub.setGroupType(club.getGroupType());
         existingClub.setCategory(club.getCategory());
         return clubRepository.save(existingClub);
     }
 
-    public void uploadFile(MultipartFile file, Long id) throws IOException {
+    public void updateEmblem(MultipartFile file, Long id) throws IOException {
         Club club = clubRepository.findById(id).orElse(null);
         String fileName = generateUniqueFileName(file.getOriginalFilename());
         saveFile(file, fileName);
@@ -76,8 +78,18 @@ public class ClubService {
     }
 
 
-    public void delete(Long id){
-        clubRepository.deleteById(id);
+    public Club ban(Long id) {
+        Club club = clubRepository.findById(id).orElse(null);
+        assert club != null;
+        club.setBan("Bloqueado");
+        return clubRepository.save(club);
+    }
+
+    public Club unban(Long id) {
+        Club club = clubRepository.findById(id).orElse(null);
+        assert club != null;
+        club.setBan("Ativo");
+        return clubRepository.save(club);
     }
 
     public Resource displayCover(Long id){

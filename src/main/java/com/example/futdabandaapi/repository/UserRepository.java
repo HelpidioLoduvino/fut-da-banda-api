@@ -16,8 +16,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     UserDetails findByEmail(String email);
 
-    @Query("select new com.example.futdabandaapi.model.User(u.id, u.fullName, u.email, u.password, u.userRole) from User u where u.email = :email")
-    User findByUserEmail(String email);
+    User findUserByEmail(String email);
 
     @Query("SELECT u FROM User u WHERE u.userRole <> 'ADMIN'")
     Page<User> findAllExceptAdmin(Pageable pageable);

@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -41,14 +42,49 @@ public class UserController {
         return ResponseEntity.ok(userService.getAllExceptAdmin(pageable));
     }
 
-    @GetMapping("/players")
-    public ResponseEntity<List<PlayerDto>> getAllPlayers() {
-        return ResponseEntity.ok(userService.getAllPlayers());
+    @GetMapping("/{id}")
+    public ResponseEntity<User> findById(@PathVariable Long id) {
+        return ResponseEntity.ok(userService.findById(id));
     }
 
-    @DeleteMapping
-    public ResponseEntity<Object> deleteUser(@RequestParam Long id) {
-        userService.delete(id);
+    @GetMapping("/user")
+    public ResponseEntity<User> findByUserRole(@RequestParam("role") String role) {
+        return ResponseEntity.ok(userService.findByUserRole(role));
+    }
+
+    @GetMapping("/players")
+    public ResponseEntity<Page<Player>> getAllPlayers(Pageable pageable) {
+        return ResponseEntity.ok(userService.getAllPlayers(pageable));
+    }
+
+    @GetMapping("/role")
+    public ResponseEntity<String> findUserRole(){
+        return ResponseEntity.ok(userService.findUserRole());
+    }
+
+    @PutMapping("/ban")
+    public ResponseEntity<User> ban(@RequestParam Long id) {
+        return ResponseEntity.ok(userService.ban(id));
+    }
+
+    @PutMapping("/unban")
+    public ResponseEntity<User> unban(@RequestParam Long id) {
+        return ResponseEntity.ok(userService.unban(id));
+    }
+
+    @PutMapping
+    public ResponseEntity<User> update(@RequestParam Long id, @RequestBody User user) {
+        return ResponseEntity.ok(userService.update(user, id));
+    }
+
+    @PutMapping("/player")
+    public ResponseEntity<Player> updatePlayer(@RequestParam Long id, @RequestBody Player player) {
+        return ResponseEntity.ok(userService.updatePlayer(player, id));
+    }
+
+    @PutMapping("/photo")
+    public ResponseEntity<Object> updatePhoto(@RequestParam Long id, @RequestParam("photo") MultipartFile photo) throws IOException {
+        userService.updatePhoto(photo, id);
         return ResponseEntity.ok().build();
     }
 

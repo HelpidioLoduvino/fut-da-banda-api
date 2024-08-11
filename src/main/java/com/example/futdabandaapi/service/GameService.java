@@ -14,6 +14,7 @@ public class GameService {
     private final GameRepository gameRepository;
 
     public Game addGame(Game game) {
+        game.setStatus("Em Falta");
         return gameRepository.save(game);
     }
 

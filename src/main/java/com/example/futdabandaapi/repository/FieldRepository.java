@@ -10,4 +10,5 @@ import java.util.Optional;
 @Repository
 public interface FieldRepository extends JpaRepository<Field, Long> {
     Optional<Field> findByNameEqualsIgnoreCase(String name);
+    List<Field> findAllByStatus(String status);
 }

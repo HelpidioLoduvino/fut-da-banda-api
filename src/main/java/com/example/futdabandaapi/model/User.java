@@ -26,13 +26,15 @@ public class User implements UserDetails {
     private String password;
     private String confirmPassword;
     private String userRole;
+    private String status;
 
-    public User(Long id, String fullName, String email, String encodedPassword, String userRole) {
+    public User(Long id, String fullName, String email, String encodedPassword, String userRole, String status) {
         this.id = id;
         this.fullName = fullName;
         this.email = email;
         this.password = encodedPassword;
         this.userRole = userRole;
+        this.status = status;
     }
 
     @Override
@@ -43,6 +45,7 @@ public class User implements UserDetails {
             case "SUB-CAPTAIN" -> authorities.add(new SimpleGrantedAuthority("SUB-CAPTAIN"));
             case "CAPTAIN" -> authorities.add(new SimpleGrantedAuthority("CAPTAIN"));
             case "PLAYER" -> authorities.add(new SimpleGrantedAuthority("PLAYER"));
+            case "USER" -> authorities.add(new SimpleGrantedAuthority("USER"));
         }
         return authorities;
     }

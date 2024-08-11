@@ -59,6 +59,7 @@ public class UserService implements UserDetailsService {
             if(userRepository.findByEmail(user.getEmail()) != null) throw new RuntimeException("User already exists");
             String encodedPassword = passwordEncoder.encode(user.getPassword());
             user.setPassword(encodedPassword);
+            user.setStatus("Ativo");
             return userRepository.save(user);
         }catch (Exception e){
             throw new RuntimeException(e);
@@ -76,6 +77,12 @@ public class UserService implements UserDetailsService {
 
             saveFile(photo, filename);
 
+            player.setStatus("Ativo");
+
+            if(player.getAvailable() == null){
+                player.setAvailable("Indisponível");
+            }
+
             Player newPlayer = new Player(
                     null,
                     player.getFullName(),
@@ -85,7 +92,9 @@ public class UserService implements UserDetailsService {
                     uploadPath.getPlayerUploadDir() + filename,
                     player.getPosition(),
                     player.getGender(),
-                    player.getBiography()
+                    player.getBiography(),
+                    player.getAvailable(),
+                    player.getStatus()
             );
 
             return playerRepository.save(newPlayer);
@@ -95,6 +104,7 @@ public class UserService implements UserDetailsService {
         }
     }
 
+
     public LoginResponseDto login(@RequestBody LoginDto loginDTO){
         AuthenticationManager authenticationManager = applicationContext.getBean(AuthenticationManager.class);
         var emailPassword = new UsernamePasswordAuthenticationToken(loginDTO.email(), loginDTO.password());
@@ -103,10 +113,8 @@ public class UserService implements UserDetailsService {
         User user = (User) authentication.getPrincipal();
         var token = tokenService.generateToken((User) authentication.getPrincipal());
         var refreshToken = tokenService.generateRefreshToken((User) authentication.getPrincipal());
-        String email = user.getEmail();
         String userRole = user.getAuthorities().iterator().next().getAuthority();
-        Long id = user.getId();
-        return new LoginResponseDto(id, token, refreshToken, email, userRole);
+        return new LoginResponseDto(token, refreshToken, userRole, user.getStatus());
     }
 
     public ResponseEntity<?> refresh(@RequestBody TokenRefreshRequestDto request) {
@@ -127,12 +135,60 @@ public class UserService implements UserDetailsService {
         return userRepository.findAllExceptAdmin(pageable);
     }
 
-    public List<PlayerDto> getAllPlayers() {
-        return playerRepository.findAllPlayers();
+    public Page<Player> getAllPlayers(Pageable pageable) {
+        return playerRepository.findAll(pageable);
     }
 
-    public void delete(Long id) {
-        userRepository.deleteById(id);
+    public User findById(Long id){
+        return userRepository.findById(id).orElse(null);
+    }
+
+    public User findByUserRole(String userRole){
+        return userRepository.findByUserRole(userRole);
+    }
+
+    public String findUserRole(){
+        String email = getCurrentUser();
+        User user = userRepository.findUserByEmail(email);
+        return user.getUserRole();
+    }
+
+    public User update(User user, Long id){
+        User existingUser = userRepository.findById(id).orElseThrow(()-> new RuntimeException("Usuário não encontrado"));
+        existingUser.setEmail(user.getEmail());
+        existingUser.setFullName(user.getFullName());
+        return userRepository.save(existingUser);
+    }
+
+    public Player updatePlayer(Player player, Long id){
+        Player existingPlayer = playerRepository.findById(id).orElseThrow(()-> new RuntimeException("Jogador não encontrado"));
+        existingPlayer.setGender(player.getGender());
+        existingPlayer.setBiography(player.getBiography());
+        existingPlayer.setPosition(player.getPosition());
+        return playerRepository.save(existingPlayer);
+    }
+
+    public void updatePhoto(MultipartFile file, Long id) throws IOException {
+        Player player = playerRepository.findById(id).orElse(null);
+        String fileName = generateUniqueFileName(file.getOriginalFilename());
+        saveFile(file, fileName);
+        assert player != null;
+        player.setPhoto(uploadPath.getClubUploadDir() + fileName);
+        playerRepository.save(player);
+    }
+
+    public User ban(Long id) {
+        User user = userRepository.findById(id).orElse(null);
+        assert user != null;
+        user.setStatus("Bloqueado");
+        return userRepository.save(user);
+    }
+
+    public User unban(Long id) {
+        User user = userRepository.findById(id).orElse(null);
+        assert user != null;
+        user.setStatus("Ativo");
+        return userRepository.save(user);
     }
 
     public String getCurrentUser() {

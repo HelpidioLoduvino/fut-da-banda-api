@@ -32,4 +32,6 @@ public class Game {
 
     private LocalDateTime dateTime;
 
+    private String status;
+
 }

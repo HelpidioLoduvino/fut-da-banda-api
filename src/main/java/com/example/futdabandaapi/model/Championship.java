@@ -36,4 +36,6 @@ public class Championship {
     @ManyToMany
     private List<Club> clubs = new ArrayList<>();
 
+    private String ban;
+
 }
