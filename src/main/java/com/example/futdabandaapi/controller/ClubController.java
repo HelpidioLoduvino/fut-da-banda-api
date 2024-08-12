@@ -33,6 +33,11 @@ public class ClubController {
         return ResponseEntity.ok(clubService.findById(id));
     }
 
+    @GetMapping("/exists")
+    public ResponseEntity<Club> findClubIfExists(){
+        return ResponseEntity.ok(clubService.findClubIfExists());
+    }
+
     @PutMapping
     public ResponseEntity<Club> update(@RequestBody Club club, @RequestParam("id") Long id) {
         return ResponseEntity.ok(clubService.update(club, id));

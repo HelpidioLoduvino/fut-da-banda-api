@@ -9,6 +9,7 @@ public record PlayerDto(
         String photo,
         String position,
         String gender,
-        String biography
+        String biography,
+        String available
 ) {
 }

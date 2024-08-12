@@ -131,12 +131,12 @@ public class UserService implements UserDetailsService {
         }
     }
 
-    public Page<User> getAllExceptAdmin(Pageable pageable) {
+    public Page<UserDto> getAllExceptAdmin(Pageable pageable) {
         return userRepository.findAllExceptAdmin(pageable);
     }
 
-    public Page<Player> getAllPlayers(Pageable pageable) {
-        return playerRepository.findAll(pageable);
+    public Page<PlayerDto> getAllPlayers(Pageable pageable) {
+        return playerRepository.findAllAvailablePlayers(pageable);
     }
 
     public User findById(Long id){

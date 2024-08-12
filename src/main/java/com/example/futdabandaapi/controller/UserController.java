@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
@@ -38,7 +37,7 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<User>> getAllUsers(Pageable pageable) {
+    public ResponseEntity<Page<UserDto>> getAllUsers(Pageable pageable) {
         return ResponseEntity.ok(userService.getAllExceptAdmin(pageable));
     }
 
@@ -53,7 +52,7 @@ public class UserController {
     }
 
     @GetMapping("/players")
-    public ResponseEntity<Page<Player>> getAllPlayers(Pageable pageable) {
+    public ResponseEntity<Page<PlayerDto>> getAllPlayers(Pageable pageable) {
         return ResponseEntity.ok(userService.getAllPlayers(pageable));
     }
 

@@ -1,8 +1,10 @@
 package com.example.futdabandaapi.service;
 
 import com.example.futdabandaapi.model.Club;
+import com.example.futdabandaapi.model.Player;
 import com.example.futdabandaapi.model.User;
 import com.example.futdabandaapi.repository.ClubRepository;
+import com.example.futdabandaapi.repository.PlayerRepository;
 import com.example.futdabandaapi.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.core.io.Resource;
@@ -28,23 +30,44 @@ public class ClubService {
 
     private final ClubRepository clubRepository;
     private final UserRepository userRepository;
+    private final PlayerRepository playerRepository;
     private final UserService userService;
     private final UploadPath uploadPath;
 
     public Club add(Club club, MultipartFile file) throws IOException {
+        try{
+            club.setBan("Ativo");
+            String filename = generateUniqueFileName(file.getOriginalFilename());
+            saveFile(file, filename);
+            club.setEmblem(uploadPath.getClubUploadDir() + filename);
+            club.setReadyToPlay(false);
 
+            String email = userService.getCurrentUser();
+            User user = userRepository.findUserByEmail(email);
+            Long userId = user.getId();
+            String userRole = user.getUserRole();
+
+            if(userRole.equals("CAPTAIN")){
+                Player player = playerRepository.findById(userId).orElse(null);
+                assert player != null;
+                if (clubRepository.existsByPlayersContaining(player)) {
+                    throw new IllegalStateException("Usuário já criou um time e não pode criar outro.");
+                } else {
+                    club.getPlayers().add(player);
+                }
+            }
+            return clubRepository.save(club);
+        }catch (Exception e){
+            throw  new RuntimeException("Erro ao criar Clube" + e.getMessage());
+        }
+
+    }
+
+    public Club findClubIfExists() {
         String email = userService.getCurrentUser();
-
         User user = userRepository.findUserByEmail(email);
-
-        club.setBan("Ativo");
-
-        String filename = generateUniqueFileName(file.getOriginalFilename());
-        saveFile(file, filename);
-        club.setEmblem(uploadPath.getClubUploadDir() + filename);
-        club.getPlayers().add(user);
-        club.setReadyToPlay(false);
-        return clubRepository.save(club);
+        assert user != null;
+        return clubRepository.findById(user.getId()).orElse(null);
     }
 
     public Page<Club> getAll(Pageable pageable) {
