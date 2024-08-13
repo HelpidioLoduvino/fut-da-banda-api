@@ -9,5 +9,6 @@ import java.util.List;
 
 @Repository
 public interface ClubRepository extends JpaRepository<Club, Long> {
-    boolean existsByPlayersContaining(Player players);
+    boolean existsByPlayersContaining(Player player);
+    Club findByPlayersContaining(Player player);
 }

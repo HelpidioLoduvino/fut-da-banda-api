@@ -25,7 +25,7 @@ public class ChampionshipService {
         return championshipRepository.findAll();
     }
 
-    public Page<Championship> getAllChampionships(Pageable pageable) {
+    public Page<Championship> getAll(Pageable pageable) {
         return championshipRepository.findAll(pageable);
     }
 

@@ -150,7 +150,10 @@ public class UserService implements UserDetailsService {
     public String findUserRole(){
         String email = getCurrentUser();
         User user = userRepository.findUserByEmail(email);
-        return user.getUserRole();
+        if(user != null){
+            return user.getUserRole();
+        }
+        return "UNKNOWN_ROLE";
     }
 
     public User update(User user, Long id){

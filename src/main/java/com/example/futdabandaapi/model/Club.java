@@ -38,7 +38,7 @@ public class Club {
     private boolean isReadyToPlay;
 
     @ManyToMany
-    private List<User> players = new ArrayList<>();
+    private List<Player> players = new ArrayList<>();
 
     private String ban;
 

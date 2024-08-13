@@ -24,7 +24,7 @@ public class ChampionshipController {
 
     @GetMapping
     public ResponseEntity<Page<Championship>> getAll(Pageable pageable) {
-        return ResponseEntity.ok(championshipService.getAllChampionships(pageable));
+        return ResponseEntity.ok(championshipService.getAll(pageable));
     }
 
     @GetMapping("/list")

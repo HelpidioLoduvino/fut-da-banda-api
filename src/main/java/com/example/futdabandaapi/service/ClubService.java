@@ -67,7 +67,26 @@ public class ClubService {
         String email = userService.getCurrentUser();
         User user = userRepository.findUserByEmail(email);
         assert user != null;
-        return clubRepository.findById(user.getId()).orElse(null);
+        Player player = playerRepository.findById(user.getId()).orElse(null);
+        assert player != null;
+        Club club = clubRepository.findByPlayersContaining(player);
+
+        if (club != null && club.getPlayers().stream().
+                anyMatch(captain->player.equals(user) && player.getUserRole().equals("CAPTAIN"))) {
+            return club;
+        }
+
+        return null;
+    }
+
+    public Boolean isPlayerClubCaptain(Long id){
+        Club club = clubRepository.findById(id).orElse(null);
+        assert club != null;
+        String email = userService.getCurrentUser();
+        User user = userRepository.findUserByEmail(email);
+        assert user != null;
+        return club.getPlayers().stream().
+                anyMatch(player->player.equals(user) && player.getUserRole().equals("CAPTAIN"));
     }
 
     public Page<Club> getAll(Pageable pageable) {
