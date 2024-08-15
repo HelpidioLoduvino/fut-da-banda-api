@@ -163,6 +163,7 @@ public class UserService implements UserDetailsService {
         return userRepository.save(existingUser);
     }
 
+
     public Player updatePlayer(Player player, Long id){
         Player existingPlayer = playerRepository.findById(id).orElseThrow(()-> new RuntimeException("Jogador não encontrado"));
         existingPlayer.setGender(player.getGender());
