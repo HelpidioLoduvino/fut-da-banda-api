@@ -13,4 +13,4 @@ EXPOSE 8080
 
 COPY --from=build /target/fut-da-banda-api-1.0.0.jar app.jar
 
-ENTRYPOINT [ "java", "-Dspring.profiles.active=prod", "-jar", "app.jar" ]
+ENTRYPOINT [ "java", "-Dspring.profiles.active=default,prod", "-jar", "app.jar" ]
