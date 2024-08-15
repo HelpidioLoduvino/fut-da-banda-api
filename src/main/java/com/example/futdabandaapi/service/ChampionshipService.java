@@ -49,14 +49,18 @@ public class ChampionshipService {
 
     public Championship ban(Long id) {
         Championship championship = championshipRepository.findById(id).orElse(null);
-        assert championship != null;
+        if(championship == null){
+            return null;
+        }
         championship.setBan("Bloqueado");
         return championshipRepository.save(championship);
     }
 
     public Championship unban(Long id) {
         Championship championship = championshipRepository.findById(id).orElse(null);
-        assert championship != null;
+        if(championship == null){
+            return null;
+        }
         championship.setBan("Ativo");
         return championshipRepository.save(championship);
     }

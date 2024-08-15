@@ -176,21 +176,27 @@ public class UserService implements UserDetailsService {
         Player player = playerRepository.findById(id).orElse(null);
         String fileName = generateUniqueFileName(file.getOriginalFilename());
         saveFile(file, fileName);
-        assert player != null;
+        if(player == null){
+            throw new RuntimeException("Jogador não encontrado");
+        }
         player.setPhoto(uploadPath.getClubUploadDir() + fileName);
         playerRepository.save(player);
     }
 
     public User ban(Long id) {
         User user = userRepository.findById(id).orElse(null);
-        assert user != null;
+        if(user == null){
+            return null;
+        }
         user.setStatus("Bloqueado");
         return userRepository.save(user);
     }
 
     public User unban(Long id) {
         User user = userRepository.findById(id).orElse(null);
-        assert user != null;
+        if(user == null){
+            return null;
+        }
         user.setStatus("Ativo");
         return userRepository.save(user);
     }

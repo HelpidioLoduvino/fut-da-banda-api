@@ -66,9 +66,17 @@ public class ClubService {
     public Club findClubIfExists() {
         String email = userService.getCurrentUser();
         User user = userRepository.findUserByEmail(email);
-        assert user != null;
+
+        if(user == null){
+            return null;
+        }
+
         Player player = playerRepository.findById(user.getId()).orElse(null);
-        assert player != null;
+
+        if(player == null){
+            return null;
+        }
+
         Club club = clubRepository.findByPlayersContaining(player);
 
         if (club != null && club.getPlayers().stream().
@@ -81,10 +89,15 @@ public class ClubService {
 
     public Boolean isPlayerClubCaptain(Long id){
         Club club = clubRepository.findById(id).orElse(null);
-        assert club != null;
+
+        if(club == null){
+            return false;
+        }
         String email = userService.getCurrentUser();
         User user = userRepository.findUserByEmail(email);
-        assert user != null;
+        if(user == null){
+            return false;
+        }
         return club.getPlayers().stream().
                 anyMatch(player->player.equals(user) && player.getUserRole().equals("CAPTAIN"));
     }
@@ -114,7 +127,9 @@ public class ClubService {
         Club club = clubRepository.findById(id).orElse(null);
         String fileName = generateUniqueFileName(file.getOriginalFilename());
         saveFile(file, fileName);
-        assert club != null;
+        if(club == null){
+            throw new RuntimeException("Clube não encontrado!");
+        }
         club.setEmblem(uploadPath.getClubUploadDir() + fileName);
         clubRepository.save(club);
     }
@@ -122,14 +137,18 @@ public class ClubService {
 
     public Club ban(Long id) {
         Club club = clubRepository.findById(id).orElse(null);
-        assert club != null;
+        if(club == null){
+            return null;
+        }
         club.setBan("Bloqueado");
         return clubRepository.save(club);
     }
 
     public Club unban(Long id) {
         Club club = clubRepository.findById(id).orElse(null);
-        assert club != null;
+        if(club == null){
+            return null;
+        }
         club.setBan("Ativo");
         return clubRepository.save(club);
     }
