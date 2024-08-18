@@ -34,7 +34,6 @@ import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -135,9 +134,19 @@ public class UserService implements UserDetailsService {
         return userRepository.findAllExceptAdmin(pageable);
     }
 
-    public Page<PlayerDto> getAllPlayers(Pageable pageable) {
+    public Page<PlayerDto> getAllAvailablePlayers(Pageable pageable) {
         return playerRepository.findAllAvailablePlayers(pageable);
     }
+
+    public Boolean isAvailable(){
+        String email = getCurrentUser();
+        User user = userRepository.findUserByEmail(email);
+        if(user == null) return false;
+        Player player = playerRepository.findById(user.getId()).orElse(null);
+        if(player == null) return false;
+        return player.getAvailable().equals("Disponível");
+    }
+
 
     public User findById(Long id){
         return userRepository.findById(id).orElse(null);

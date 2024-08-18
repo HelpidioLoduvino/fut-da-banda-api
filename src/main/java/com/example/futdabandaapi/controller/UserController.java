@@ -52,8 +52,8 @@ public class UserController {
     }
 
     @GetMapping("/players")
-    public ResponseEntity<Page<PlayerDto>> getAllPlayers(Pageable pageable) {
-        return ResponseEntity.ok(userService.getAllPlayers(pageable));
+    public ResponseEntity<Page<PlayerDto>> getAllAvailablePlayers(Pageable pageable) {
+        return ResponseEntity.ok(userService.getAllAvailablePlayers(pageable));
     }
 
     @GetMapping("/role")
@@ -95,6 +95,11 @@ public class UserController {
     @GetMapping("/display/{id}")
     public ResponseEntity<Resource> showPhoto(@PathVariable Long id) {
         return ResponseEntity.ok(userService.showPhoto(id));
+    }
+
+    @GetMapping("/available")
+    public ResponseEntity<Boolean> isPlayerAvailable(){
+        return ResponseEntity.ok(userService.isAvailable());
     }
 
 }

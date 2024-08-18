@@ -87,6 +87,24 @@ public class ClubService {
         return null;
     }
 
+    public Boolean playerHasClub() {
+
+        String email = userService.getCurrentUser();
+
+        User user = userRepository.findUserByEmail(email);
+
+        if(user == null){
+            return false;
+        }
+
+        Player player = playerRepository.findById(user.getId()).orElse(null);
+        if(player == null){
+            return false;
+        }
+        Club club = clubRepository.findByPlayersContaining(player);
+        return club != null;
+    }
+
     public Boolean isPlayerClubCaptain(Long id){
         Club club = clubRepository.findById(id).orElse(null);
 

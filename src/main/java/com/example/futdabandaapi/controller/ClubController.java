@@ -38,6 +38,11 @@ public class ClubController {
         return ResponseEntity.ok(clubService.findClubIfExists());
     }
 
+    @GetMapping("/player")
+    public ResponseEntity<Boolean> playerHasClub(){
+        return ResponseEntity.ok(clubService.playerHasClub());
+    }
+
     @GetMapping("/captain")
     public ResponseEntity<Boolean> isPlayerClubCaptain(@RequestParam("id") Long id){
         return ResponseEntity.ok(clubService.isPlayerClubCaptain(id));
