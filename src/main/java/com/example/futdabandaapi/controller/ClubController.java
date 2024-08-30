@@ -1,5 +1,6 @@
 package com.example.futdabandaapi.controller;
 
+import com.example.futdabandaapi.dto.ClubDto;
 import com.example.futdabandaapi.model.Club;
 import com.example.futdabandaapi.service.ClubService;
 import lombok.AllArgsConstructor;
@@ -11,9 +12,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 @RestController
-@RequestMapping("/api/clubs")
+@RequestMapping("/clubs")
 @AllArgsConstructor
 public class ClubController {
     private final ClubService clubService;
@@ -24,12 +26,12 @@ public class ClubController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<Club>> getAll(Pageable pageable) {
+    public ResponseEntity<Page<ClubDto>> getAll(Pageable pageable) {
         return ResponseEntity.ok(clubService.getAll(pageable));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Club> getClubById(@PathVariable Long id) {
+    public ResponseEntity<ClubDto> getClubById(@PathVariable Long id) {
         return ResponseEntity.ok(clubService.findById(id));
     }
 
@@ -72,5 +74,15 @@ public class ClubController {
     @GetMapping("/display/{id}")
     public ResponseEntity<Resource> displayImage(@PathVariable Long id) {
         return ResponseEntity.ok(clubService.displayCover(id));
+    }
+
+    @GetMapping("/available")
+    public ResponseEntity<Boolean> isAvailable(@RequestParam("id") Long id){
+        return ResponseEntity.ok(clubService.clubIsAvailableToCompete(id));
+    }
+
+    @GetMapping("/four")
+    public ResponseEntity<List<ClubDto>> getFour(){
+        return ResponseEntity.ok(clubService.getFour());
     }
 }

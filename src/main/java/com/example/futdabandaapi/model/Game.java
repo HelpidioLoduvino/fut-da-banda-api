@@ -23,10 +23,10 @@ public class Game {
     private Field field;
 
     @ManyToOne
-    private Club first;
+    private Club firstClub;
 
     @ManyToOne
-    private Club second;
+    private Club secondClub;
 
     private Integer matchDay;
 

@@ -18,8 +18,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     User findUserByEmail(String email);
 
-    @Query("SELECT new com.example.futdabandaapi.dto.UserDto(u.id, u.fullName, u.email, u.userRole, u.status) FROM User u WHERE u.userRole <> 'ADMIN'")
-    Page<UserDto> findAllExceptAdmin(Pageable pageable);
+    Page<User> findAllByUserRoleNot(String status, Pageable pageable);
 
     User findByUserRole(String role);
 

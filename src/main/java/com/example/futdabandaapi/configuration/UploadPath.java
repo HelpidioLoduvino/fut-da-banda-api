@@ -1,4 +1,4 @@
-package com.example.futdabandaapi.service;
+package com.example.futdabandaapi.configuration;
 
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,5 +13,8 @@ public class UploadPath {
 
     @Value("${player.upload.dir}")
     private String playerUploadDir;
+
+    @Value("${field.upload.dir}")
+    private String fieldUploadDir;
 
 }

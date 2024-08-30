@@ -1,4 +1,16 @@
 package com.example.futdabandaapi.dto;
 
-public record UserDto(Long id, String fullName, String email, String userRole, String status) {
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class UserDto {
+    private Long id;
+    private String fullName;
+    private String email;
+    private String userRole;
+    private String status;
 }

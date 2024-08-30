@@ -1,6 +1,8 @@
 package com.example.futdabandaapi.controller;
 
+import com.example.futdabandaapi.dto.ChampionshipDto;
 import com.example.futdabandaapi.model.Championship;
+import com.example.futdabandaapi.model.ChampionshipStat;
 import com.example.futdabandaapi.service.ChampionshipService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -11,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/championships")
+@RequestMapping("/championships")
 @AllArgsConstructor
 public class ChampionshipController {
 
@@ -23,17 +25,22 @@ public class ChampionshipController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<Championship>> getAll(Pageable pageable) {
+    public ResponseEntity<Page<ChampionshipDto>> getAll(Pageable pageable) {
         return ResponseEntity.ok(championshipService.getAll(pageable));
     }
 
     @GetMapping("/list")
-    public ResponseEntity<List<Championship>> getAllChampionships() {
+    public ResponseEntity<List<ChampionshipDto>> getAllChampionships() {
         return ResponseEntity.ok(championshipService.findAll());
     }
 
+    @GetMapping("/two")
+    public ResponseEntity<List<ChampionshipDto>> getTwoChampionships() {
+        return ResponseEntity.ok(championshipService.findTwo());
+    }
+
     @GetMapping("/{id}")
-    public ResponseEntity<Championship> getById(@PathVariable Long id) {
+    public ResponseEntity<ChampionshipDto> getById(@PathVariable Long id) {
         return ResponseEntity.ok(championshipService.findById(id));
     }
 
@@ -50,5 +57,10 @@ public class ChampionshipController {
     @PutMapping("/unban")
     public ResponseEntity<Championship> unban(@RequestParam Long id) {
         return ResponseEntity.ok(championshipService.unban(id));
+    }
+
+    @GetMapping("/stats")
+    public ResponseEntity<List<ChampionshipStat>> getStats(@RequestParam("id") Long id){
+        return ResponseEntity.ok(championshipService.getStatByChampionshipId(id));
     }
 }

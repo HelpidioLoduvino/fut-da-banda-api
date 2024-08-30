@@ -1,6 +1,7 @@
 package com.example.futdabandaapi.controller;
 
 import com.example.futdabandaapi.model.Invitation;
+import com.example.futdabandaapi.model.JoinChampionship;
 import com.example.futdabandaapi.service.InvitationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -9,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/invitations")
+@RequestMapping("/invitations")
 @RequiredArgsConstructor
 public class InvitationController {
     private final InvitationService invitationService;
@@ -72,5 +73,30 @@ public class InvitationController {
     @GetMapping("/permissions")
     public ResponseEntity<List<Invitation>> getPlayerPermissions(){
         return ResponseEntity.ok(invitationService.playerAlreadyAskedForPermission());
+    }
+
+    @PostMapping("/championship")
+    public ResponseEntity<JoinChampionship> askToJoinChampionship(@RequestParam("id") Long id){
+        return ResponseEntity.ok(invitationService.askToJoinChampionship(id));
+    }
+
+    @GetMapping("/championship")
+    public ResponseEntity<List<JoinChampionship>> getChampionships(){
+        return ResponseEntity.ok(invitationService.getAllChampionshipInvitations());
+    }
+
+    @GetMapping("/championship/permission")
+    public ResponseEntity<List<JoinChampionship>> getClubPermissions(){
+        return ResponseEntity.ok(invitationService.clubAlreadyAskedForPermission());
+    }
+
+    @PutMapping("/championship/accept")
+    public ResponseEntity<JoinChampionship> acceptChampionshipPermission(@RequestParam("id") Long id){
+        return ResponseEntity.ok(invitationService.acceptClubInvitation(id));
+    }
+
+    @PutMapping("/championship/reject")
+    public ResponseEntity<JoinChampionship> rejectChampionshipPermission(@RequestParam("id") Long id){
+        return ResponseEntity.ok(invitationService.rejectClubInvitation(id));
     }
 }

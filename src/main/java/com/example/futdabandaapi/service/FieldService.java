@@ -1,23 +1,36 @@
 package com.example.futdabandaapi.service;
 
+import com.example.futdabandaapi.configuration.UploadPath;
 import com.example.futdabandaapi.model.Field;
 import com.example.futdabandaapi.repository.FieldRepository;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
 @AllArgsConstructor
+@Transactional
 public class FieldService {
 
     private final FieldRepository fieldRepository;
+    private final UploadPath uploadPath;
+    private final FileUploadService fileUploadService;
 
-    public Field save(Field field){
-        return fieldRepository.save(field);
+    public Field save(Field field, MultipartFile file){
+        try{
+            String filename = fileUploadService.generateUniqueFileName(file.getOriginalFilename());
+            fileUploadService.saveFile(file, uploadPath.getFieldUploadDir(), filename);
+            field.setPhoto(uploadPath.getFieldUploadDir() + filename);
+            return fieldRepository.save(field);
+        }catch (Exception e){
+            throw new RuntimeException("Error saving field", e);
+        }
     }
 
     public Page<Field> findAll(Pageable pageable){
@@ -32,13 +45,30 @@ public class FieldService {
         return fieldRepository.findById(id).orElse(null);
     }
 
-    public Field update(Field field, Long id){
-        Field existingField = fieldRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Field not found."));
-        existingField.setName(field.getName());
-        existingField.setLocation(field.getLocation());
-        existingField.setStatus(field.getStatus());
-        return fieldRepository.save(existingField);
+    public Field update(Field field, MultipartFile file, Long id){
+        try{
+            Field existingField = findById(id);
+            if(existingField != null){
+                existingField.setName(field.getName());
+                existingField.setLocation(field.getLocation());
+                existingField.setStatus(field.getStatus());
+                existingField.setPrice(field.getPrice());
+                existingField.setGeolocation(field.getGeolocation());
+                existingField.setType(field.getType());
+                if(file != null && !file.isEmpty()){
+                    fileUploadService.deleteFile(existingField.getPhoto());
+                    String filename = fileUploadService.generateUniqueFileName(file.getOriginalFilename());
+                    fileUploadService.saveFile(file, uploadPath.getFieldUploadDir(), filename);
+                    field.setPhoto(uploadPath.getFieldUploadDir() + filename);
+                } else {
+                    existingField.setPhoto(existingField.getPhoto());
+                }
+                return fieldRepository.save(existingField);
+            }
+            return null;
+        } catch (Exception e){
+            throw new RuntimeException("Error updating field", e);
+        }
     }
 
     public void delete(Long id){

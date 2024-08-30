@@ -15,7 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/users")
 @AllArgsConstructor
 public class UserController {
 
@@ -42,13 +42,18 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<User> findById(@PathVariable Long id) {
+    public ResponseEntity<UserDto> findById(@PathVariable Long id) {
         return ResponseEntity.ok(userService.findById(id));
     }
 
     @GetMapping("/user")
-    public ResponseEntity<User> findByUserRole(@RequestParam("role") String role) {
+    public ResponseEntity<UserDto> findByUserRole(@RequestParam("role") String role) {
         return ResponseEntity.ok(userService.findByUserRole(role));
+    }
+
+    @GetMapping("/authenticated")
+    public ResponseEntity<UserDto> getAuthenticated() {
+        return ResponseEntity.ok(userService.getAuthenticated());
     }
 
     @GetMapping("/players")

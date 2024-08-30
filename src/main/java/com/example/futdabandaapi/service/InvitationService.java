@@ -1,13 +1,7 @@
 package com.example.futdabandaapi.service;
 
-import com.example.futdabandaapi.model.Club;
-import com.example.futdabandaapi.model.Invitation;
-import com.example.futdabandaapi.model.Player;
-import com.example.futdabandaapi.model.User;
-import com.example.futdabandaapi.repository.ClubRepository;
-import com.example.futdabandaapi.repository.InvitationRepository;
-import com.example.futdabandaapi.repository.PlayerRepository;
-import com.example.futdabandaapi.repository.UserRepository;
+import com.example.futdabandaapi.model.*;
+import com.example.futdabandaapi.repository.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,6 +11,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class InvitationService {
     private final InvitationRepository invitationRepository;
     private final UserService userService;
@@ -24,6 +19,9 @@ public class InvitationService {
     private final ClubRepository clubRepository;
     private final UserRepository userRepository;
     private final PlayerRepository playerRepository;
+    private final ChampionshipRepository championshipRepository;
+    private final JoinChampionshipRepository joinChampionshipRepository;
+    private final ChampionshipStatRepository championshipStatRepository;
 
     @Value("${invitation.message}")
     private String invitationMessage;
@@ -43,7 +41,9 @@ public class InvitationService {
     @Value("${join.reject}")
     private String joinReject;
 
-    @Transactional
+    @Value("${join.championship.message}")
+    private String joinChampionshipMessage;
+
     public Invitation invite(Long playerId) {
         try{
             String email = userService.getCurrentUser();
@@ -252,5 +252,94 @@ public class InvitationService {
         return invitationRepository.findAllBySenderIdAndStatus(user.getId(), "Pedido");
 
     }
+
+    public JoinChampionship askToJoinChampionship(Long championshipId) {
+        try {
+            Championship championship =  championshipRepository.findById(championshipId).orElse(null);
+            if(championship != null){
+                String email = userService.getCurrentUser();
+                User user = userRepository.findUserByEmail(email);
+                if(user != null){
+                    Player player = playerRepository.findById(user.getId()).orElse(null);
+                    if(player != null){
+                        Club club = clubRepository.findByPlayersContaining(player);
+                        if(club != null){
+                            JoinChampionship joinChampionship = new JoinChampionship();
+                            joinChampionship.setChampionship(championship);
+                            joinChampionship.setClub(club);
+                            joinChampionship.setMessage(joinChampionshipMessage);
+                            joinChampionship.setStatus("Em Espera");
+                            return joinChampionshipRepository.save(joinChampionship);
+                        }
+                    }
+                }
+            }
+            return null;
+        }catch (Exception e){
+            throw new RuntimeException("Error asking to join championship", e);
+        }
+    }
+
+    public List<JoinChampionship> getAllChampionshipInvitations(){
+        return joinChampionshipRepository.findAllByStatus("Em Espera");
+    }
+
+    public List<JoinChampionship> clubAlreadyAskedForPermission(){
+
+        String email = userService.getCurrentUser();
+        User user = userRepository.findUserByEmail(email);
+
+        if (user == null) {
+            return null;
+        }
+
+        Player player = playerRepository.findById(user.getId()).orElse(null);
+        if(player != null){
+
+            Club club = clubRepository.findByPlayersContaining(player);
+
+            return joinChampionshipRepository.findAllByClubAndStatus(club, "Em Espera");
+        }
+
+        return null;
+
+    }
+
+    public JoinChampionship acceptClubInvitation(Long invitationId){
+
+        JoinChampionship joinChampionship = joinChampionshipRepository.findById(invitationId).orElse(null);
+
+        if(joinChampionship == null){
+            return null;
+        }
+
+        joinChampionship.setStatus("Aceite");
+
+        Championship championship = championshipRepository.findById(joinChampionship.getChampionship().getId()).orElse(null);
+
+        if(championship != null){
+
+            championship.getClubs().add(joinChampionship.getClub());
+            championshipRepository.save(championship);
+
+            ChampionshipStat championshipStat = new ChampionshipStat();
+            championshipStat.setChampionship(championship);
+            championshipStat.setClub(joinChampionship.getClub());
+            championshipStatRepository.save(championshipStat);
+
+            return joinChampionshipRepository.save(joinChampionship);
+        }
+        return null;
+    }
+
+    public JoinChampionship rejectClubInvitation(Long invitationId){
+        JoinChampionship joinChampionship = joinChampionshipRepository.findById(invitationId).orElse(null);
+        if(joinChampionship == null){
+            return null;
+        }
+        joinChampionship.setStatus("Rejeitado");
+        return joinChampionshipRepository.save(joinChampionship);
+    }
+
 
 }

@@ -7,19 +7,20 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Optional;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/api/fields")
+@RequestMapping("/fields")
 public class FieldController {
     private final FieldService fieldService;
 
     @PostMapping
-    public ResponseEntity<Field> save(@RequestBody Field field){
-        return ResponseEntity.ok(fieldService.save(field));
+    public ResponseEntity<Field> save(@RequestPart("field") Field field, @RequestPart("photo") MultipartFile photo){
+        return ResponseEntity.ok(fieldService.save(field, photo));
     }
 
     @GetMapping
@@ -38,8 +39,8 @@ public class FieldController {
     }
 
     @PutMapping
-    public ResponseEntity<Field> update(@RequestBody Field field, @RequestParam("id") Long id){
-        return ResponseEntity.ok(fieldService.update(field, id));
+    public ResponseEntity<Field> update(@RequestPart("field") Field field, @RequestPart(value = "photo", required = false) MultipartFile file, @RequestParam("id") Long id){
+        return ResponseEntity.ok(fieldService.update(field, file, id));
     }
 
     @DeleteMapping()

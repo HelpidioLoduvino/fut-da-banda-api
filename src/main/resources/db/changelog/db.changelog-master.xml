@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="2" author="admin">
+
+    </changeSet>
+    <changeSet id="3" author="admin">
+        <dropTable tableName="game" cascadeConstraints="true"/>
+    </changeSet>
+    <changeSet id="4" author="admin">
+        <dropTable tableName="game_stat" />
+    </changeSet>
+    <changeSet id="5" author="admin">
+        <dropTable tableName="game_stat"/>
+    </changeSet>
+    <changeSet id="6" author="admin">
+        <dropTable tableName="game" cascadeConstraints="true"/>
+    </changeSet>
+    <changeSet id="7" author="">
+        <dropTable tableName="game_stat" cascadeConstraints="true"/>
+    </changeSet>
+    <changeSet id="8" author="">
+        <dropTable tableName="game" cascadeConstraints="true"/>
+    </changeSet>
+    <changeSet id="9" author="admin">
+        <dropTable tableName="game_stat" cascadeConstraints="true"/>
+    </changeSet>
+    <changeSet id="10" author="admin">
+        <dropTable tableName="game" cascadeConstraints="true"/>
+    </changeSet>
+    <changeSet id="11" author="admin">
+        <dropTable tableName="player_stat" cascadeConstraints="true"/>
+    </changeSet>
+    <changeSet id="12" author="admin">
+        <dropTable tableName="game_stat" cascadeConstraints="true"/>
+    </changeSet>
+    <changeSet id="13" author="admin">
+        <dropTable tableName="game" cascadeConstraints="true"/>
+    </changeSet>
+</databaseChangeLog>

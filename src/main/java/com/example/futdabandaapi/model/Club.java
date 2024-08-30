@@ -31,11 +31,13 @@ public class Club {
     @Column(columnDefinition = "TEXT")
     private String description;
 
-    private String groupType;
+    private String competition;
 
     private String category;
 
-    private boolean isReadyToPlay;
+    private String admissionTest;
+
+    private String gender;
 
     @ManyToMany
     private List<Player> players = new ArrayList<>();

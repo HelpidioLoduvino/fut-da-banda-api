@@ -13,9 +13,7 @@ import java.util.List;
 @Repository
 public interface PlayerRepository extends JpaRepository<Player, Long> {
 
-    @Query("select new com.example.futdabandaapi.dto.PlayerDto(p.id, p.fullName, p.email, p.userRole, p.photo, p.position, p.gender, p.biography, p.available) from Player p where p.available = 'Disponível'")
-    Page<PlayerDto> findAllAvailablePlayers(Pageable pageable);
+    Page<Player> findAllByAvailableAndIdNot(Pageable pageable, String available, Long id);
 
-    List<Player> findAllByAvailable(String available);
 
 }

@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,13 +24,22 @@ public class Championship {
     @Column(columnDefinition = "TEXT")
     private String description;
 
+    @Column(columnDefinition = "TEXT")
+    private String manualRule;
+
     private String category;
 
     private String province;
 
-    private String groupType;
+    private String type;
+
+    private String gender;
+
+    private String pricePer;
 
     private Double price;
+
+    private String rule;
 
     private Integer matchDay;
 
@@ -37,5 +47,9 @@ public class Championship {
     private List<Club> clubs = new ArrayList<>();
 
     private String ban;
+
+    private LocalDate expiryDate;
+
+    private LocalDate startDate;
 
 }

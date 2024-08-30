@@ -19,5 +19,13 @@ public class Field {
 
     private String location;
 
+    private String type;
+
+    private String price;
+
+    private String geolocation;
+
+    private String photo;
+
     private String status;
 }

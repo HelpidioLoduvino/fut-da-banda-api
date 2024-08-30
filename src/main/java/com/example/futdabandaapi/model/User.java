@@ -42,8 +42,6 @@ public class User implements UserDetails {
         List<SimpleGrantedAuthority> authorities = new ArrayList<>();
         switch (this.userRole) {
             case "ADMIN" -> authorities.add(new SimpleGrantedAuthority("ADMIN"));
-            case "SUB-CAPTAIN" -> authorities.add(new SimpleGrantedAuthority("SUB-CAPTAIN"));
-            case "CAPTAIN" -> authorities.add(new SimpleGrantedAuthority("CAPTAIN"));
             case "PLAYER" -> authorities.add(new SimpleGrantedAuthority("PLAYER"));
             case "USER" -> authorities.add(new SimpleGrantedAuthority("USER"));
         }

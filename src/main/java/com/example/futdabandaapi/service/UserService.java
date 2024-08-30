@@ -1,6 +1,9 @@
 package com.example.futdabandaapi.service;
 
+import com.example.futdabandaapi.configuration.UploadPath;
 import com.example.futdabandaapi.dto.*;
+import com.example.futdabandaapi.mapper.PlayerMapper;
+import com.example.futdabandaapi.mapper.UserMapper;
 import com.example.futdabandaapi.model.Player;
 import com.example.futdabandaapi.model.User;
 import com.example.futdabandaapi.repository.PlayerRepository;
@@ -10,11 +13,8 @@ import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -28,16 +28,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.UUID;
+
+import static com.example.futdabandaapi.service.FileUploadService.getResourceResponseEntity;
 
 @Service
 @AllArgsConstructor
+@Transactional
 public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
@@ -46,6 +46,7 @@ public class UserService implements UserDetailsService {
     private final ApplicationContext applicationContext;
     private final TokenService tokenService;
     private final UploadPath uploadPath;
+    private final FileUploadService fileUploadService;
 
 
     @Override
@@ -65,16 +66,15 @@ public class UserService implements UserDetailsService {
         }
     }
 
-    @Transactional
     public Player registerPlayer(Player player, MultipartFile photo) {
         try {
             if(userRepository.findByEmail(player.getEmail()) != null) throw new RuntimeException("Player already exists");
 
             String encodedPassword = passwordEncoder.encode(player.getPassword());
 
-            String filename = generateUniqueFileName(photo.getOriginalFilename());
+            String filename = fileUploadService.generateUniqueFileName(photo.getOriginalFilename());
 
-            saveFile(photo, filename);
+            fileUploadService.saveFile(photo, uploadPath.getPlayerUploadDir(), filename);
 
             player.setStatus("Ativo");
 
@@ -131,11 +131,23 @@ public class UserService implements UserDetailsService {
     }
 
     public Page<UserDto> getAllExceptAdmin(Pageable pageable) {
-        return userRepository.findAllExceptAdmin(pageable);
+        return userRepository.findAllByUserRoleNot("ADMIN",pageable)
+                .map(UserMapper.INSTANCE::toUserDto);
     }
 
     public Page<PlayerDto> getAllAvailablePlayers(Pageable pageable) {
-        return playerRepository.findAllAvailablePlayers(pageable);
+        String email = getCurrentUser();
+        User user = userRepository.findUserByEmail(email);
+        if(user == null){
+            return null;
+        }
+
+        Player player = playerRepository.findById(user.getId()).orElse(null);
+        if(player == null){
+            return null;
+        }
+        return playerRepository.findAllByAvailableAndIdNot(pageable, "Disponível", player.getId())
+                .map(PlayerMapper.INSTANCE::toPlayerDto);
     }
 
     public Boolean isAvailable(){
@@ -148,12 +160,17 @@ public class UserService implements UserDetailsService {
     }
 
 
-    public User findById(Long id){
-        return userRepository.findById(id).orElse(null);
+    public UserDto findById(Long id){
+        return UserMapper.INSTANCE.toUserDto(userRepository.findById(id).orElse(null));
     }
 
-    public User findByUserRole(String userRole){
-        return userRepository.findByUserRole(userRole);
+    public UserDto findByUserRole(String userRole){
+        return UserMapper.INSTANCE.toUserDto(userRepository.findByUserRole(userRole));
+    }
+
+    public UserDto getAuthenticated(){
+        String email = getCurrentUser();
+        return UserMapper.INSTANCE.toUserDto(userRepository.findUserByEmail(email));
     }
 
     public String findUserRole(){
@@ -183,13 +200,13 @@ public class UserService implements UserDetailsService {
 
     public void updatePhoto(MultipartFile file, Long id) throws IOException {
         Player player = playerRepository.findById(id).orElse(null);
-        String fileName = generateUniqueFileName(file.getOriginalFilename());
-        saveFile(file, fileName);
-        if(player == null){
-            throw new RuntimeException("Jogador não encontrado");
+        if(player != null){
+            fileUploadService.deleteFile(player.getPhoto());
+            String fileName = fileUploadService.generateUniqueFileName(file.getOriginalFilename());
+            fileUploadService.saveFile(file, uploadPath.getPlayerUploadDir(), fileName);
+            player.setPhoto(uploadPath.getClubUploadDir() + fileName);
+            playerRepository.save(player);
         }
-        player.setPhoto(uploadPath.getClubUploadDir() + fileName);
-        playerRepository.save(player);
     }
 
     public User ban(Long id) {
@@ -226,20 +243,6 @@ public class UserService implements UserDetailsService {
         return username;
     }
 
-    private String generateUniqueFileName(String originalFilename) {
-        return UUID.randomUUID() + "_" + originalFilename;
-    }
-
-    private void saveFile(MultipartFile file, String fileName) throws IOException {
-
-        File directory = new File(uploadPath.getPlayerUploadDir());
-        if (!directory.exists()) {
-            directory.mkdirs();
-        }
-        Path filePath = Paths.get(uploadPath.getPlayerUploadDir() + fileName);
-        Files.write(filePath, file.getBytes());
-    }
-
     public Resource showPhoto(Long id){
         try{
             Player player = playerRepository.findById(id).orElse(null);
@@ -253,18 +256,5 @@ public class UserService implements UserDetailsService {
         return null;
     }
 
-    static Resource getResourceResponseEntity(Path path) throws MalformedURLException {
-        Resource resource = new UrlResource(path.toUri());
-        if(resource.exists() || resource.isReadable()){
-            HttpHeaders headers = new HttpHeaders();
-            headers.add(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + resource.getFilename() + "\"");
-            return ResponseEntity.ok()
-                    .headers(headers)
-                    .contentType(MediaType.APPLICATION_OCTET_STREAM)
-                    .body(resource).getBody();
-        } else {
-            return null;
-        }
-    }
 
 }
