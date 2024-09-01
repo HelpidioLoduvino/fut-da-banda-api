@@ -8,5 +8,6 @@ import java.util.List;
 
 @Repository
 public interface ChampionshipStatRepository extends JpaRepository<ChampionshipStat, Long> {
-    List<ChampionshipStat> findAllByChampionshipId(Long championshipId);
+    List<ChampionshipStat> findAllByChampionshipIdOrderByPointsDesc(Long championshipId);
+    ChampionshipStat findByChampionshipIdAndClubId(Long championshipId, Long clubId);
 }

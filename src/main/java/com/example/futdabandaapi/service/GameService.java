@@ -24,6 +24,7 @@ public class GameService {
     private final GameRepository gameRepository;
     private final ClubRepository clubRepository;
     private final ChampionshipRepository championshipRepository;
+    private final ChampionshipStatRepository championshipStatRepository;
     private final FieldRepository fieldRepository;
     private final PlayerRepository playerRepository;
     private final GameStatRepository gameStatRepository;
@@ -108,6 +109,47 @@ public class GameService {
             if(game == null){
                 throw new RuntimeException("Game not found");
             }
+            GameStat gameStatFirstClub = gameStatRepository.findByGameIdAndClubId(game.getId(), game.getFirstClub().getId());
+            if(gameStatFirstClub == null){
+                throw new RuntimeException("First Club Stats not found");
+            }
+            GameStat gameStatSecondClub = gameStatRepository.findByGameIdAndClubId(game.getId(), game.getSecondClub().getId());
+            if(gameStatSecondClub == null){
+                throw new RuntimeException("Second Club Stats not found");
+            }
+
+            ChampionshipStat firstClubStat = championshipStatRepository.findByChampionshipIdAndClubId(game.getChampionship().getId(), game.getFirstClub().getId());
+            if (firstClubStat == null){
+                throw new RuntimeException("First Club championship Stats not found");
+            }
+
+            ChampionshipStat secondClubStat = championshipStatRepository.findByChampionshipIdAndClubId(game.getChampionship().getId(), game.getSecondClub().getId());
+            if (secondClubStat == null){
+                throw new RuntimeException("Second Club championship Stats not found");
+            }
+
+            if(gameStatFirstClub.getGoals() > gameStatSecondClub.getGoals()){
+                firstClubStat.setPoints(firstClubStat.getPoints() + 3);
+                firstClubStat.setWins(firstClubStat.getWins() + 1);
+                secondClubStat.setLosses(secondClubStat.getLosses() + 1);
+            } else if(gameStatFirstClub.getGoals() < gameStatSecondClub.getGoals()){
+                secondClubStat.setPoints(secondClubStat.getPoints() + 3);
+                secondClubStat.setWins(secondClubStat.getWins() + 1);
+                firstClubStat.setLosses(firstClubStat.getLosses() + 1);
+            } else{
+                firstClubStat.setPoints(firstClubStat.getPoints() + 1);
+                secondClubStat.setPoints(secondClubStat.getPoints() + 1);
+                firstClubStat.setDraws(firstClubStat.getDraws() + 1);
+                secondClubStat.setDraws(secondClubStat.getDraws() + 1);
+            }
+            firstClubStat.setMatches(firstClubStat.getMatches() + 1);
+            secondClubStat.setMatches(secondClubStat.getMatches() + 1);
+            firstClubStat.setGoalsScored(firstClubStat.getGoalsScored() + gameStatFirstClub.getGoals());
+            secondClubStat.setGoalsScored(secondClubStat.getGoalsScored() + gameStatSecondClub.getGoals());
+            firstClubStat.setGoalsConceded(firstClubStat.getGoalsConceded() + gameStatSecondClub.getGoals());
+            secondClubStat.setGoalsConceded(secondClubStat.getGoalsConceded() + gameStatFirstClub.getGoals());
+            championshipStatRepository.save(firstClubStat);
+            championshipStatRepository.save(secondClubStat);
             game.setStatus("Terminado");
             return gameRepository.save(game);
         }catch (Exception e){

@@ -92,7 +92,7 @@ public class ChampionshipService {
     }
 
     public List<ChampionshipStat> getStatByChampionshipId(Long championshipId) {
-        return championshipStatRepository.findAllByChampionshipId(championshipId);
+        return championshipStatRepository.findAllByChampionshipIdOrderByPointsDesc(championshipId);
     }
 
 }

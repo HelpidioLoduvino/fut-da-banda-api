@@ -4,7 +4,6 @@ import com.example.futdabandaapi.dto.GameDto;
 import com.example.futdabandaapi.dto.GameStatDto;
 import com.example.futdabandaapi.dto.PlayerStatDto;
 import com.example.futdabandaapi.model.Game;
-import com.example.futdabandaapi.model.GameStat;
 import com.example.futdabandaapi.service.GameService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
