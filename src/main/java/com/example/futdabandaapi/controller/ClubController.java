@@ -45,6 +45,11 @@ public class ClubController {
         return ResponseEntity.ok(clubService.playerHasClub());
     }
 
+    @GetMapping("/club")
+    public ResponseEntity<ClubDto> getPlayerClub(){
+        return ResponseEntity.ok(clubService.getPlayerClub());
+    }
+
     @GetMapping("/captain")
     public ResponseEntity<Boolean> isPlayerClubCaptain(@RequestParam("id") Long id){
         return ResponseEntity.ok(clubService.isPlayerClubCaptain(id));

@@ -111,6 +111,24 @@ public class ClubService {
         return club != null;
     }
 
+    public ClubDto getPlayerClub(){
+        String email = userService.getCurrentUser();
+
+        User user = userRepository.findUserByEmail(email);
+
+        if(user == null){
+            return null;
+        }
+
+        Player player = playerRepository.findById(user.getId()).orElse(null);
+        if(player == null){
+            return null;
+        }
+
+        return ClubMapper.INSTANCE.toClubDto(clubRepository.findByPlayersContaining(player));
+
+    }
+
     public Boolean isPlayerClubCaptain(Long id){
 
         Club club = clubRepository.findById(id).orElse(null);

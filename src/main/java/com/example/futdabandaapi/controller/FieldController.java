@@ -3,6 +3,7 @@ package com.example.futdabandaapi.controller;
 import com.example.futdabandaapi.model.Field;
 import com.example.futdabandaapi.service.FieldService;
 import lombok.AllArgsConstructor;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -52,5 +53,10 @@ public class FieldController {
     @GetMapping("/name/{name}")
     public ResponseEntity<Optional<Field>> findByName(@PathVariable String name){
         return ResponseEntity.ok(fieldService.findByName(name));
+    }
+
+    @GetMapping("/display/{id}")
+    public ResponseEntity<Resource> displayImage(@PathVariable Long id) {
+        return ResponseEntity.ok(fieldService.displayCover(id));
     }
 }

@@ -103,7 +103,6 @@ public class UserService implements UserDetailsService {
         }
     }
 
-
     public LoginResponseDto login(@RequestBody LoginDto loginDTO){
         AuthenticationManager authenticationManager = applicationContext.getBean(AuthenticationManager.class);
         var emailPassword = new UsernamePasswordAuthenticationToken(loginDTO.email(), loginDTO.password());
@@ -162,6 +161,19 @@ public class UserService implements UserDetailsService {
 
     public UserDto findById(Long id){
         return UserMapper.INSTANCE.toUserDto(userRepository.findById(id).orElse(null));
+    }
+
+    public PlayerDto findByPlayerId(Long id){
+        return PlayerMapper.INSTANCE.toPlayerDto(playerRepository.findById(id).orElse(null));
+    }
+
+    public PlayerDto findAuthenticatedPlayer(){
+        String email = getCurrentUser();
+        User user = userRepository.findUserByEmail(email);
+        if(user == null) return null;
+        Player player = playerRepository.findById(user.getId()).orElse(null);
+        if(player == null) return null;
+        return PlayerMapper.INSTANCE.toPlayerDto(player);
     }
 
     public UserDto findByUserRole(String userRole){

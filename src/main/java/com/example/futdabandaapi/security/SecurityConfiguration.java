@@ -60,6 +60,7 @@ public class SecurityConfiguration implements WebMvcConfigurer {
                         .requestMatchers(HttpMethod.DELETE, "/fields").hasAuthority("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/fields").permitAll()
                         .requestMatchers(HttpMethod.GET, "/fields/{id}").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/fields/display/{id}").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)

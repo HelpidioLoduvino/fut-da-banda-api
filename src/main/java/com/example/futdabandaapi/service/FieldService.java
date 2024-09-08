@@ -1,17 +1,24 @@
 package com.example.futdabandaapi.service;
 
 import com.example.futdabandaapi.configuration.UploadPath;
+import com.example.futdabandaapi.model.Club;
 import com.example.futdabandaapi.model.Field;
 import com.example.futdabandaapi.repository.FieldRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.net.MalformedURLException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
+
+import static com.example.futdabandaapi.service.FileUploadService.getResourceResponseEntity;
 
 @Service
 @AllArgsConstructor
@@ -77,5 +84,18 @@ public class FieldService {
 
     public Optional<Field> findByName(String name){
         return fieldRepository.findByNameEqualsIgnoreCase(name);
+    }
+
+    public Resource displayCover(Long id){
+        try{
+            Field field = fieldRepository.findById(id).orElse(null);
+            if(field != null){
+                Path path = Paths.get(field.getPhoto());
+                return getResourceResponseEntity(path);
+            }
+        }catch (MalformedURLException e) {
+            throw new RuntimeException("Error: " + e.getMessage());
+        }
+        return null;
     }
 }

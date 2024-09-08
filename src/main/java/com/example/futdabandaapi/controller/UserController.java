@@ -46,6 +46,11 @@ public class UserController {
         return ResponseEntity.ok(userService.findById(id));
     }
 
+    @GetMapping("/player/{id}")
+    public ResponseEntity<PlayerDto> findByPlayerId(@PathVariable Long id) {
+        return ResponseEntity.ok(userService.findByPlayerId(id));
+    }
+
     @GetMapping("/user")
     public ResponseEntity<UserDto> findByUserRole(@RequestParam("role") String role) {
         return ResponseEntity.ok(userService.findByUserRole(role));
@@ -59,6 +64,11 @@ public class UserController {
     @GetMapping("/players")
     public ResponseEntity<Page<PlayerDto>> getAllAvailablePlayers(Pageable pageable) {
         return ResponseEntity.ok(userService.getAllAvailablePlayers(pageable));
+    }
+
+    @GetMapping("/player")
+    public ResponseEntity<PlayerDto> getPlayer() {
+        return ResponseEntity.ok(userService.findAuthenticatedPlayer());
     }
 
     @GetMapping("/role")
